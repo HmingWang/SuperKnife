@@ -26,8 +26,8 @@ public class MQController {
     @Autowired
     HttpServletRequest request;
 
-    @Autowired
-    JmsTemplate jmsTemplate;
+//    @Autowired
+//    JmsTemplate jmsTemplate;
 
     @GetMapping("init")
     ApiResult init(@RequestParam String qmgr,
@@ -51,12 +51,12 @@ public class MQController {
             Queue qSend = new MQQueue(qsend);
             QueueSender sender = qs.createSender(qSend);
 
-            Queue qRecv=new MQQueue(qrecv);
-            QueueReceiver receiver=qs.createReceiver(qRecv);
+            Queue qRecv = new MQQueue(qrecv);
+            QueueReceiver receiver = qs.createReceiver(qRecv);
 
-            request.getSession().setAttribute("qsend",sender);
-            request.getSession().setAttribute("qrecv",receiver);
-            request.getSession().setAttribute("qsession",qs);
+            request.getSession().setAttribute("qsend", sender);
+            request.getSession().setAttribute("qrecv", receiver);
+            request.getSession().setAttribute("qsession", qs);
             log.info("mq connect success!");
             return ApiResult.success();
         } catch (JMSException e) {
@@ -68,10 +68,10 @@ public class MQController {
 
     @GetMapping("send")
     ApiResult send(@RequestParam String msg) {
-        QueueSender s= (QueueSender) request.getSession().getAttribute("qsend");
-        QueueSession qs= (QueueSession) request.getSession().getAttribute("qsession");
+        QueueSender s = (QueueSender) request.getSession().getAttribute("qsend");
+        QueueSession qs = (QueueSession) request.getSession().getAttribute("qsession");
         try {
-            Message m=qs.createTextMessage(msg);
+            Message m = qs.createTextMessage(msg);
             s.send(m);
             log.info("send message::{}", msg);
 
@@ -83,13 +83,16 @@ public class MQController {
     }
 
     @GetMapping("recv")
-    ApiResult recv(){
-        QueueReceiver r= (QueueReceiver) request.getSession().getAttribute("qrecv");
+    ApiResult recv() {
+        QueueReceiver r = (QueueReceiver) request.getSession().getAttribute("qrecv");
         try {
-            Message m=r.receive();
-            String msg=m.getBody(String.class);
-            log.info("recv message::{}", msg);
+            Message m = r.receiveNoWait();
+            String msg="";
 
+            if (m != null) {
+                msg = m.getBody(String.class);
+                log.info("recv message::{}", msg);
+            }
             return ApiResult.success(msg);
         } catch (JMSException e) {
             log.error(e.getMessage());

@@ -1,0 +1,14 @@
+<mat-toolbar color="primary" class="header mat-elevation-z6">
+  <a href="/" mat-button>
+    <div class="logo"></div>
+  </a>
+  <div class="sub-title" fxHide.lt-sm="true">———— 系统工具集成</div>
+  <span class="example-spacer"></span>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>format_color_fill</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>Dark</button>
+    <button mat-menu-item>Light</button>
+  </mat-menu>
+</mat-toolbar>
