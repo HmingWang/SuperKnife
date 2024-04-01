@@ -30,7 +30,7 @@ public class MQController {
 //    JmsTemplate jmsTemplate;
 
     @GetMapping("init")
-    ApiResult init(@RequestParam String qmgr,
+    ApiResult<?> init(@RequestParam String qmgr,
                    @RequestParam String channel,
                    @RequestParam String conn,
                    @RequestParam String userid,
@@ -67,7 +67,7 @@ public class MQController {
     }
 
     @GetMapping("send")
-    ApiResult send(@RequestParam String msg) {
+    ApiResult<?> send(@RequestParam String msg) {
         QueueSender s = (QueueSender) request.getSession().getAttribute("qsend");
         QueueSession qs = (QueueSession) request.getSession().getAttribute("qsession");
         try {
@@ -83,7 +83,7 @@ public class MQController {
     }
 
     @GetMapping("recv")
-    ApiResult recv() {
+    ApiResult<?> recv() {
         QueueReceiver r = (QueueReceiver) request.getSession().getAttribute("qrecv");
         try {
             Message m = r.receiveNoWait();
