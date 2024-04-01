@@ -10,7 +10,15 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
-import {FlexModule} from "@angular/flex-layout";
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+import { FormsModule } from '@angular/forms';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient } from '@angular/common/http';
+
+registerLocaleData(en);
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,9 +34,13 @@ import {FlexModule} from "@angular/flex-layout";
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    FlexModule
+    FormsModule
   ],
-  providers: [],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    provideAnimationsAsync(),
+    provideHttpClient()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
