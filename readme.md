@@ -2,5 +2,6 @@
 
 ## 架构
 
-electron + angular + c++ 技术栈
+webui: electron + angular
+backend:cpp
 
