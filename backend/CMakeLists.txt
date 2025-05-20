@@ -1,20 +1,28 @@
 cmake_minimum_required(VERSION 3.10)
 
-message(STATUS "配置信息： ${CMAKE_SOURCE_DIR}")
-
 set(name backend)
 project(${name})
 
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_DEBUG_POSTFIX "_d")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(WITH_TESTS true)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+if(MSVC)
+    include(msvc)
+endif()
+include(info)
+info()
 
 aux_source_directory(. src)
 add_library(${name} SHARED ${src})
+target_compile_definitions(${name} PRIVATE MYLIBRARY_EXPORT)
 
-##############|test|################
+
+# #############|test|################
 if(WITH_TESTS)
     include(CTest)
     include(catch2)
