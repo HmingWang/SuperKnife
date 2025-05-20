@@ -1,10 +1,7 @@
 <div class="login-container">
   <div class="login-box">
-    <div class="login-header">
-      <h1 nz-typography>欢迎登录</h1>
-      <p nz-typography nzType="secondary">请输入您的用户名和密码</p>
-    </div>
-    
+    <h1 class="login-title">欢迎登录</h1>
+
     <form nz-form [formGroup]="loginForm" (ngSubmit)="submitForm()" class="login-form">
       <nz-form-item>
         <nz-form-control nzErrorTip="请输入用户名!">
@@ -14,8 +11,8 @@
         </nz-form-control>
       </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-control nzErrorTip="请输入密码!">
+      <nz-form-item style="margin-top: 16px;">
+        <nz-form-control nzErrorTip="请输入密码!" >
           <nz-input-group nzPrefixIcon="lock">
             <input type="password" nz-input formControlName="password" placeholder="密码" />
           </nz-input-group>
@@ -27,7 +24,7 @@
           <label nz-checkbox formControlName="remember">
             <span>记住我</span>
           </label>
-          <a class="login-form-forgot">忘记密码?</a>
+          <a class="login-form-forgot" href="">忘记密码?</a>
         </nz-form-control>
       </nz-form-item>
 
@@ -36,7 +33,9 @@
           <button nz-button nzType="primary" class="login-form-button" [nzLoading]="isLoading" [disabled]="!loginForm.valid">
             登录
           </button>
-          或 <a>立即注册!</a>
+          <div>
+            或 <a href="">立即注册!</a>
+          </div>
         </nz-form-control>
       </nz-form-item>
     </form>
