@@ -1,10 +1,18 @@
 #include <catch2/catch_all.hpp>
+#include <windows.h>
 
 
-void hello();
+typedef int (WINAPI *FUNC_void)();
 
-TEST_CASE("Test case name") {
+
+TEST_CASE("load dll") {
     // Your test code here
-    hello();
-    REQUIRE(1 + 1 == 2);
+    HINSTANCE hdll;
+    hdll = LoadLibrary("backend_d.dll");
+    REQUIRE(hdll != NULL);
+    FUNC_void hello = (FUNC_void)GetProcAddress(hdll, "hello");
+    REQUIRE(hello != nullptr);
+    int result = hello();
+    REQUIRE(result == 1);
+
 }

@@ -17,10 +17,10 @@ endif()
 include(info)
 info()
 
-aux_source_directory(. src)
+aux_source_directory(./src src)
 add_library(${name} SHARED ${src})
-target_compile_definitions(${name} PRIVATE MYLIBRARY_EXPORT)
-
+target_compile_definitions(${name} PRIVATE DLL_EXPORTS)
+target_include_directories(${name} PRIVATE ./src)
 
 # #############|test|################
 if(WITH_TESTS)

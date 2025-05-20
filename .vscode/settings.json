@@ -3,4 +3,5 @@
     "cmake.outputLogEncoding": "auto",
     "cmake.generator": "Ninja",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.buildDirectory": "${workspaceFolder}/backend/build"
 }
