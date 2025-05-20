@@ -9,7 +9,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "el":"ng build --configuration production && electron ."
+    "el":"ng build && electron ."
   },
   "private": true,
   "dependencies": {
