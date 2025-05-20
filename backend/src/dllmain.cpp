@@ -1,7 +1,9 @@
-#include <windows.h>
+#include "headers.h"
+
+#if XCORE_PLATFORM == XCORE_PLATFORM_WINDOWS
 #include <hello.h>
 
-BOOL APIENTRY DllMain( HMODULE hModule,
+bool APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
                      )
@@ -16,3 +18,4 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     return TRUE;
 }
+#endif

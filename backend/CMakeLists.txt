@@ -19,7 +19,7 @@ info()
 
 aux_source_directory(./src src)
 add_library(${name} SHARED ${src})
-target_compile_definitions(${name} PRIVATE DLL_EXPORTS)
+target_compile_definitions(${name} PRIVATE XCORE_API_EXPORT)
 target_include_directories(${name} PRIVATE ./src)
 
 # #############|test|################

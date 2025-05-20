@@ -16,7 +16,7 @@ macro(info)
     message("-- VERSION_REVISION     Subversion revision info     ${VERSION_REVISION}") 
     message("-- COMPILE_TIME         Compile timestamp            ${COMPILE_TIME}") 
     message("-- CMAKE_DEBUG_POSTFIX  cmake debug postfix          ${CMAKE_DEBUG_POSTFIX}") 
-
+    message("-- Name                 Macros define name           ${name}") 
     message("------------------------------------------------------------------------")
     message("")
 endmacro()
