@@ -1,13 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import {NzFormControlComponent, NzFormDirective, NzFormItemComponent} from 'ng-zorro-antd/form';
+import {NzTypographyComponent} from 'ng-zorro-antd/typography';
+import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
+import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
+import {NzButtonComponent} from 'ng-zorro-antd/button';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  imports: [
+    NzFormItemComponent,
+    NzTypographyComponent,
+    ReactiveFormsModule,
+    NzFormDirective,
+    NzFormControlComponent,
+    NzInputGroupComponent,
+    NzCheckboxComponent,
+    NzButtonComponent,
+    NzInputDirective
+  ],
   styleUrls: ['./login.component.scss'] // 修改为 .scss
 })
 export class LoginComponent implements OnInit {
