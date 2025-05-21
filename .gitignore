@@ -48,4 +48,4 @@ Thumbs.db
 /playwright-report/
 /playwright/.cache/
 
-/build
+build/
