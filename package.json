@@ -13,7 +13,13 @@
     "forge": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "config":"cmake-js configure -G Ninja",
+    "build:cmake":"cmake-js build -G Ninja --config Release",
+    "build:cmake:debug":"cmake-js build -G Ninja --config Debug",
+    "build:cmake:release":"cmake-js build -G Ninja --config Release",
+    "test:cmake":"cmake-js test",
+    "rebuild:cmake":"cmake-js rebuild"
   },
   "private": true,
   "dependencies": {
