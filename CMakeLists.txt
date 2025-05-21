@@ -7,22 +7,32 @@ set(WITH_TESTS true)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+
+# 1. 查找 Node.js 可执行文件路径
+execute_process(
+  COMMAND node -e "console.log(require('node-addon-api').include)"  # 使用 console.log 而不是 -p
+  OUTPUT_VARIABLE NODE_ADDON_API_DIR
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# 使用正则表达式去除引号
+string(REGEX REPLACE "^\"|\"$" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
+
+# 2. 查找 Node.js 原生头文件路径
+execute_process(
+  COMMAND node -p "process.execPath.replace(/bin.*$/, 'include/node')"
+  OUTPUT_VARIABLE NODE_INCLUDE_DIR
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# 3. 包含头文件路径
+include_directories(
+  ${NODE_INCLUDE_DIR}      # node.h 所在目录
+  ${NODE_ADDON_API_DIR}    # napi.h 所在目录
+)
+
 # 添加子目录
 add_subdirectory(${name})
-
-# 查找 Node.js 和 Electron 头文件
-execute_process(COMMAND node -p "require('node-addon-api').include"
-  OUTPUT_VARIABLE NODE_ADDON_API_DIR
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-execute_process(COMMAND node -p "process.execPath.replace(/bin.*$/, 'include/node')"
-  OUTPUT_VARIABLE NODE_INCLUDE_DIR
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-message(STATUS "Node.js include dir: ${NODE_INCLUDE_DIR}")
-message(STATUS "Node-addon-api include dir: ${NODE_ADDON_API_DIR}")
-
-include_directories(${NODE_INCLUDE_DIR} ${NODE_ADDON_API_DIR})
 
 # #############|test|################
 if(WITH_TESTS)

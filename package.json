@@ -14,12 +14,12 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "e2e": "ng e2e",
-    "config":"cmake-js configure -G Ninja",
-    "build:cmake":"cmake-js build -G Ninja --config Release",
-    "build:cmake:debug":"cmake-js build -G Ninja --config Debug",
-    "build:cmake:release":"cmake-js build -G Ninja --config Release",
-    "test:cmake":"cmake-js test",
-    "rebuild:cmake":"cmake-js rebuild"
+    "config": "cmake-js configure -G Ninja",
+    "build:cmake": "cmake-js build",
+    "build:cmake:debug": "cmake-js build --config Debug",
+    "build:cmake:release": "cmake-js build --config Release",
+    "test:cmake": "cmake-js test",
+    "rebuild:cmake": "cmake-js rebuild"
   },
   "private": true,
   "dependencies": {
@@ -32,6 +32,7 @@
     "@angular/router": "^19.2.0",
     "electron-squirrel-startup": "^1.0.1",
     "ng-zorro-antd": "^19.2.2",
+    "node-addon-api": "^8.3.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

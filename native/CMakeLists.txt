@@ -10,7 +10,11 @@ target_link_libraries(auth PRIVATE
   OpenSSL::Crypto
 )
 
-target_include_directories(auth PRIVATE
-  ${CMAKE_SOURCE_DIR}/external/sqlite3
-  ${NODE_ADDON_API_DIR}
+message(STATUS "Node.js include dir: ${NODE_INCLUDE_DIR}")
+message(STATUS "Node-addon-api include dir: ${NODE_ADDON_API_DIR}")
+
+target_include_directories(auth
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE ${CMAKE_SOURCE_DIR}/external/sqlite3
+  PRIVATE ${NODE_ADDON_API_DIR}
 )
