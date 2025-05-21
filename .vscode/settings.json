@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "/Users/xminsky/git/SuperKnife/backend",
+    "cmake.sourceDirectory": "${workspaceFolder}/backend",
     "cmake.outputLogEncoding": "auto",
     "cmake.generator": "Ninja",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
