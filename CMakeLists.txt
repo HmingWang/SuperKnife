@@ -30,9 +30,8 @@ execute_process(
 include_directories(
   ${NODE_INCLUDE_DIR}      # node.h 所在目录
   ${NODE_ADDON_API_DIR}    # napi.h 所在目录
-  
+  ${CMAKE_JS_INC}
 )
-include_directories(${CMAKE_JS_INC})
 
 # 添加子目录
 add_subdirectory(${name})
