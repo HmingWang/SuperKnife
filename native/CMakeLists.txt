@@ -18,3 +18,4 @@ target_include_directories(auth
   PRIVATE ${CMAKE_SOURCE_DIR}/external/sqlite3
   PRIVATE ${NODE_ADDON_API_DIR}
 )
+
