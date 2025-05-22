@@ -1,5 +1,6 @@
 #include "auth.h"
 #include <sqlite3.h>
+#include <openssl/evp.h>  // 使用 EVP API
 #include <openssl/sha.h>
 #include <sstream>
 #include <iomanip>
@@ -7,15 +8,22 @@
 using namespace Napi;
 
 std::string sha256(const std::string &str, const std::string &salt) {
+    EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
+    const EVP_MD *md = EVP_sha256();
     unsigned char hash[SHA256_DIGEST_LENGTH];
-    std::string salted = str + salt;
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, salted.c_str(), salted.size());
-    SHA256_Final(hash, &sha256);
+    unsigned int hash_len;
 
+    std::string salted = str + salt;
+
+    // 计算哈希
+    EVP_DigestInit_ex(mdctx, md, NULL);
+    EVP_DigestUpdate(mdctx, salted.c_str(), salted.size());
+    EVP_DigestFinal_ex(mdctx, hash, &hash_len);
+    EVP_MD_CTX_free(mdctx);
+
+    // 转换为十六进制字符串
     std::stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
         ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
     }
     return ss.str();
