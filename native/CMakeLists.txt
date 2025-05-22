@@ -4,10 +4,13 @@ find_package(OpenSSL REQUIRED)
 # 定义 Node.js 原生模块
 add_library(auth SHARED auth.cpp)
 
+
 # 链接库
 target_link_libraries(auth PRIVATE
   OpenSSL::SSL
   OpenSSL::Crypto
+  ${CMAKE_JS_LIB}
+  sqlite3
 )
 
 message(STATUS "Node.js include dir: ${NODE_INCLUDE_DIR}")

@@ -1,7 +1,6 @@
 {
     "cmake.sourceDirectory": "${workspaceFolder}",
     "cmake.outputLogEncoding": "auto",
-    "cmake.generator": "Ninja",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "sqltools.useNodeRuntime": true,

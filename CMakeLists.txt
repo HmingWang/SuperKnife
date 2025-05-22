@@ -25,18 +25,18 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-# 设置 Node.js 库路径
-set(NODE_LIBRARY_DIR "${NODE_INCLUDE_DIR}/lib")
-
 
 # 3. 包含头文件路径
 include_directories(
   ${NODE_INCLUDE_DIR}      # node.h 所在目录
   ${NODE_ADDON_API_DIR}    # napi.h 所在目录
+  
 )
+include_directories(${CMAKE_JS_INC})
 
 # 添加子目录
 add_subdirectory(${name})
+add_subdirectory(external/sqlite3)
 
 # #############|test|################
 if(WITH_TESTS)

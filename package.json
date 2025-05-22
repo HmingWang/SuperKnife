@@ -14,7 +14,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "e2e": "ng e2e",
-    "config": "cmake-js configure -G Ninja",
+    "config": "cmake-js configure",
     "build:cmake": "cmake-js build",
     "build:cmake:debug": "cmake-js build --config Debug",
     "build:cmake:release": "cmake-js build --config Release",
