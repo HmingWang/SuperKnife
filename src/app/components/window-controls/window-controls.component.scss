@@ -1,0 +1,14 @@
+.window-controls {
+      display: flex;
+      height: 100%;
+      align-items: center;
+    }
+    button {
+      width: 46px;
+      height: 100%;
+      border-radius: 0;
+    }
+    .close-btn:hover {
+      background-color: #ff4d4f;
+      color: white;
+    }

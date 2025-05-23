@@ -4,6 +4,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## ng 目录树
 
+```
 my-angular-app/
 ├── e2e/                  # 端到端测试文件
 ├── node_modules/         # 第三方依赖包
@@ -31,4 +32,5 @@ my-angular-app/
 ├── angular.json          # Angular CLI配置
 ├── package.json          # 项目配置和依赖
 └── tsconfig.json         # TypeScript配置
+```
 

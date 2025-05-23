@@ -23,3 +23,7 @@ target_include_directories(auth
 
 # 设置输出名称和位置
 set_target_properties(auth PROPERTIES PREFIX "" SUFFIX ".node")
+
+if(MSVC)
+  target_compile_options(auth PRIVATE "/utf-8")
+endif()
