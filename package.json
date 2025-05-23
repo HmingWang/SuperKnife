@@ -1,7 +1,7 @@
 {
-  "name": "webui",
+  "name": "super-knife",
   "version": "0.0.0",
-  "main": "main.js",
+  "main": "dist/electron/main.js",
   "description": "Angular Electron App",
   "scripts": {
     "ng": "ng",
@@ -9,7 +9,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "ele": "ng build && electron .",
+    "ele": "ng build &&npm run build:tsc && electron .",
     "forge": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -19,7 +19,8 @@
     "build:cmake:debug": "cmake-js build --config Debug",
     "build:cmake:release": "cmake-js build --config Release",
     "test:cmake": "cmake-js test",
-    "rebuild:cmake": "cmake-js rebuild"
+    "rebuild:cmake": "cmake-js rebuild",
+    "build:tsc": "tsc -p tsconfig.electron.json"
   },
   "private": true,
   "dependencies": {

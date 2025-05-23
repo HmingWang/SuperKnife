@@ -1,5 +1,5 @@
-const { app, BrowserWindow,ipcMain } = require('electron');
-const path = require('path');
+import { app, BrowserWindow, ipcMain, IpcMainEvent } from 'electron';
+import path from 'path';
 
 
 function createWindow () {
@@ -7,12 +7,13 @@ function createWindow () {
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, './dist/electron/preload.js'),
             contextIsolation: true,
-            enableRemoteModule: false,
-        }
+        },
+        frame: false,
+        titleBarStyle: 'hidden',
     });
-    win.loadFile(path.join(__dirname, './dist/webui/browser/index.html'));
+    win.loadFile(path.join(__dirname, './dist/browser/index.html'));
 }
 
 // Error Handling
