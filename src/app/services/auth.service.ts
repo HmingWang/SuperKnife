@@ -1,35 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import {ElectronService} from '../core/electron.service';
 
-interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    username: string;
-    // 其他用户字段...
-  };
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://your-api-endpoint.com/api/auth/login';
+  private electronService: ElectronService=new ElectronService();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, { username, password }).pipe(
-      tap(response => {
-        // 登录成功处理
-        this.storeAuthData(response);
-      })
-    );
+  login(username: string, password: string) {
+    this.electronService.invoke('login', {username, password}).then((response) => {
+      console.log(response);
+      this.storeAuthData(response);
+    })
   }
 
-  private storeAuthData(response: LoginResponse): void {
+  private storeAuthData(response: any): void {
     localStorage.setItem('auth_token', response.token);
     localStorage.setItem('current_user', JSON.stringify(response.user));
   }

@@ -4,10 +4,14 @@
   "compilerOptions": {
     "outDir": "./dist/electron",
     "rootDir": "./electron",
-    "types": []
+    "types": [],
+    "module": "CommonJS",
+    "target": "ES6",
+    "moduleResolution": "node"
   },
   "files": [
-    "electron/main.ts",
-    "electron/preload.ts"
   ],
+  "include": [
+    "electron/*.ts"
+  ]
 }

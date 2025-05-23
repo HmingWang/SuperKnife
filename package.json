@@ -5,22 +5,24 @@
   "description": "Angular Electron App",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "ele": "ng build &&npm run build:tsc && electron .",
-    "forge": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
+    "ng:start": "ng serve --configuration development",
+    "ng:build": "ng build",
+    "ng:watch": "ng build --watch --configuration development",
+    "ng:test": "ng test",
+    "el:build": "ng build &&npm run el:tsc && electron .",
+    "el:serve": "wait-on http-get://localhost:4200/&&npm run el:tsc&&electron .",
+    "start": "npm-run-all -p el:serve ng:start",
+    "el:forge": "electron-forge start",
+    "el:package": "electron-forge package",
+    "el:make": "electron-forge make",
     "e2e": "ng e2e",
-    "config": "cmake-js configure",
-    "build:cmake": "cmake-js build",
-    "build:cmake:debug": "cmake-js build --config Debug",
-    "build:cmake:release": "cmake-js build --config Release",
-    "test:cmake": "cmake-js test",
-    "rebuild:cmake": "cmake-js rebuild",
-    "build:tsc": "tsc -p tsconfig.electron.json"
+    "cmake:config": "cmake-js configure",
+    "cmake:build": "cmake-js build",
+    "cmake:build:debug": "cmake-js build --config Debug",
+    "cmake:build:release": "cmake-js build --config Release",
+    "cmake:test": "cmake-js test",
+    "cmake:rebuild": "cmake-js rebuild",
+    "el:tsc": "tsc -p tsconfig.electron.json"
   },
   "private": true,
   "dependencies": {
@@ -59,7 +61,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "npm-run-all": "^4.1.5",
     "playwright-ng-schematics": "^2.0.3",
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.2",
+    "wait-on": "^8.0.3"
   }
 }

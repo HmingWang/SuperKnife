@@ -1,35 +1,31 @@
-import { Component } from '@angular/core';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
-import {NzIconDirective} from 'ng-zorro-antd/icon';
+import {Component} from '@angular/core';
 
-declare const window: any;
+import {ElectronService} from '../../core/electron.service';
+import {NzIconDirective} from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-window-controls',
   templateUrl: './window-controls.component.html',
   styleUrls: ['./window-controls.component.scss'],
   imports: [
-    NzButtonComponent,
     NzIconDirective
+
   ]
 
 })
 export class WindowControlsComponent {
+
+  private electronService: ElectronService=new ElectronService();
+
   minimize() {
-    if (window.electron) {
-      window.electron.ipcRenderer.invoke('window-minimize');
-    }
+    this.electronService.send('minimize-window',{});
   }
 
   maximize() {
-    if (window.electron) {
-      window.electron.ipcRenderer.invoke('window-maximize');
-    }
+    this.electronService.send('maximize-window',{});
   }
 
   close() {
-    if (window.electron) {
-      window.electron.ipcRenderer.invoke('window-close');
-    }
+    this.electronService.send('close-window',{});
   }
 }

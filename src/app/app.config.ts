@@ -7,8 +7,11 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import { IconDefinition } from '@ant-design/icons-angular';
 
-import { NzIconModule } from 'ng-zorro-antd/icon';
+import {provideNzIcons} from 'ng-zorro-antd/icon';
+// import { UserOutline, LockOutline,CloseOutline,BorderOutline,MinusOutline,ExpandOutline } from '@ant-design/icons-angular/icons';
+import * as AllIcons from '@ant-design/icons-angular/icons';
 
 // 按需导入 NG-ZORRO 模块
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -19,13 +22,20 @@ import {authInterceptor} from './interceptors/auth.interceptor';
 
 registerLocaleData(en);
 
+// const icons: IconDefinition[] = [ UserOutline, LockOutline,CloseOutline,BorderOutline,MinusOutline,ExpandOutline];
+
+
+const antDesignIcons = AllIcons as Record<string, IconDefinition>;
+const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesignIcons[key])
+
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideNzIcons(icons),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideNzI18n(en_US),
     importProvidersFrom(
-      NzIconModule.forRoot([]), // 配置图标
       NzFormModule,
       NzInputModule,
       NzButtonModule,

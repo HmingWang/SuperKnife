@@ -1,11 +1,13 @@
-<div class="window-controls">
-      <button nz-button nzType="text" (click)="minimize()">
-        <span nz-icon nzType="minus"></span>
-      </button>
-      <button nz-button nzType="text" (click)="maximize()">
-        <span nz-icon nzType="border"></span>
-      </button>
-      <button nz-button nzType="text" (click)="close()" class="close-btn">
-        <span nz-icon nzType="close"></span>
-      </button>
-    </div>
+<!-- window-controls.html -->
+<div class="macos-controls">
+  <button class="macos-close" title="关闭">
+    <nz-icon nzType="close" nzTheme="outline" class="macos-icon" (click)="close()">
+    </nz-icon>
+  </button>
+  <button class="macos-minimize" title="最小化">
+    <nz-icon nzType="minus" nzTheme="outline" class="macos-icon" (click)="minimize()"/>
+  </button>
+  <button class="macos-maximize" title="最大化">
+    <nz-icon nzType="border" nzTheme="outline" class="macos-icon" (click)="maximize()"/>
+  </button>
+</div>

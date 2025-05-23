@@ -7,7 +7,7 @@ import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {catchError, finalize, of} from 'rxjs';
+import {ElectronService} from '../../core/electron.service';
 
 @Component({
   selector: 'app-login',
@@ -20,14 +20,15 @@ import {catchError, finalize, of} from 'rxjs';
     NzFormControlComponent,
     NzInputDirective,
     NzCheckboxComponent,
-    NzButtonComponent
+    NzButtonComponent,
+
   ],
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
-
+  electronService: ElectronService=new ElectronService();
 
   constructor(private fb: FormBuilder,
               private message: NzMessageService,
@@ -54,22 +55,7 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       const {username, password} = this.loginForm.value;
 
-      this.authService.login(username, password)
-        .pipe(
-          catchError(error => {
-            this.message.error(error.error?.message || '登录失败，请重试');
-            return of(null);
-          }),
-          finalize(() => this.isLoading = false)
-        )
-        .subscribe(response => {
-          if (response) {
-            this.message.success('登录成功！');
-            // 处理重定向逻辑
-            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-            this.router.navigateByUrl(returnUrl);
-          }
-        });
+      this.electronService.send('minimize-window',{});
     }
   }
 }
