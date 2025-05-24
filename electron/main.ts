@@ -1,7 +1,7 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'path';
 
-let isDev = !app.isPackaged;
+let isDev: boolean = false;
 let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
@@ -19,13 +19,14 @@ function createWindow() {
     resizable: false,
 
   });
-  if (!isDev) {
+  if (isDev) {
+    console.log("env:development");
+    mainWindow.webContents.openDevTools();
+    mainWindow.loadURL("http://localhost:4200");
+    mainWindow.resizable = true;
+  } else {
     console.log("env:production");
     mainWindow.loadFile(path.join(path.resolve(), './dist/renderer/browser/index.html'));
-  } else {
-    console.log("env:development");
-    // mainWindow.webContents.openDevTools();
-    mainWindow.loadURL("http://localhost:4200");
   }
 
   ipcMain.on('login', async (event, credentials) => {
@@ -43,17 +44,14 @@ function createWindow() {
       throw new Error('Invalid credentials');
     }
   });
-  ipcMain.on('minimize-window', () => {
+  ipcMain.on('minimize-window', async () => {
     mainWindow?.minimize();
   });
-  ipcMain.on('maximize-window', () => {
-    mainWindow?.isMaximized()?mainWindow?.unmaximize():mainWindow?.maximize();
+  ipcMain.on('maximize-window', async () => {
+    mainWindow?.isMaximized() ? mainWindow?.unmaximize() : mainWindow?.maximize();
   });
-  ipcMain.on('close-window', () => {
+  ipcMain.on('close-window', async () => {
     mainWindow?.close();
-  });
-  ipcMain.on('environment', (event, prod: boolean) => {
-    isDev = !prod;
   });
 }
 
@@ -63,6 +61,9 @@ process.on('uncaughtException', (error) => {
 });
 
 app.whenReady().then(() => {
+
+  isDev = process.env["BUILD_TYPE"] === "dev";
+
   createWindow()
 
 

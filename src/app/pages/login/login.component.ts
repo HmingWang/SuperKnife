@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzFormControlComponent, NzFormDirective, NzFormItemComponent} from 'ng-zorro-antd/form';
 import {NzInputDirective, NzInputGroupComponent} from 'ng-zorro-antd/input';
-import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,7 +18,6 @@ import {ElectronService} from '../../core/electron.service';
     NzInputGroupComponent,
     NzFormControlComponent,
     NzInputDirective,
-    NzCheckboxComponent,
     NzButtonComponent,
 
   ],

@@ -22,11 +22,12 @@ export class ElectronService {
 
 
   constructor() {
+    console.log("env:",this.env.production);
     this.initEnviroment();
   }
 
   initEnviroment(): void {
-    window.electronAPI.send("environment",this.env.production);
+    this.send("environment",this.env.production);
   }
 
   send(channel: string, data: any) {

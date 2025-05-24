@@ -4,7 +4,7 @@
   align-items: center;
   height: 100vh;
   background: #f0f2f5;
-  background-image: none;
+  background-image: url("/assets/pexels-arjay-neyra-2152024526-32132398.jpg");
   background-repeat: no-repeat;
   background-position: center 110px;
   background-size: 100%;
@@ -16,11 +16,6 @@
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
   background: #fff;
   border-radius: 4px;
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 24px;
 }
 
 .login-form {
@@ -36,13 +31,6 @@
   margin-bottom: 8px;
 }
 
-@media (max-width: 768px) {
-  .login-container {
-    background-size: auto;
-  }
-
-  .login-box {
-    width: 90%;
-    padding: 24px;
-  }
+nz-form-item{
+  margin: 4px;
 }
