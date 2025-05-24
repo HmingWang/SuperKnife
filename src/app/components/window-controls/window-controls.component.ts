@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, input, Input} from '@angular/core';
 
 import {ElectronService} from '../../core/electron.service';
 import {NzIconDirective} from 'ng-zorro-antd/icon';
@@ -14,6 +14,11 @@ import {NzIconDirective} from 'ng-zorro-antd/icon';
 
 })
 export class WindowControlsComponent {
+
+
+  @Input() title!: string;
+
+
 
   private electronService: ElectronService=new ElectronService();
 

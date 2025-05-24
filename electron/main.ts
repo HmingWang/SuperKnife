@@ -8,14 +8,15 @@ function createWindow() {
 
 
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 320,
+    height: 450,
     webPreferences: {
       preload: path.join(path.resolve(), './dist/electron/preload.js'),
     },
     frame: false, //隐藏边框
     // transparent: true, // 可选：透明背景
     // titleBarStyle: 'hidden'//macos :hiddenInset/hidden仅隐藏标题栏，但显示控制按钮。
+    resizable: false,
 
   });
   if (!isDev) {

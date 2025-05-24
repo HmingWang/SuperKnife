@@ -1,13 +1,17 @@
 <!-- window-controls.html -->
-<div class="macos-controls">
-  <button class="macos-close" title="关闭">
-    <nz-icon nzType="close" nzTheme="outline" class="macos-icon" (click)="close()">
-    </nz-icon>
-  </button>
-  <button class="macos-minimize" title="最小化">
-    <nz-icon nzType="minus" nzTheme="outline" class="macos-icon" (click)="minimize()"/>
-  </button>
-  <button class="macos-maximize" title="最大化">
-    <nz-icon nzType="border" nzTheme="outline" class="macos-icon" (click)="maximize()"/>
-  </button>
+<div class="window-controls">
+  <div class="control-button">
+    <button class="window-close" title="关闭">
+      <nz-icon nzType="close" nzTheme="outline" class="btn-icon" (click)="close()">
+      </nz-icon>
+    </button>
+    <button class="window-minimize" title="最小化">
+      <nz-icon nzType="minus" nzTheme="outline" class="btn-icon" (click)="minimize()"/>
+    </button>
+    <button class="window-maximize" title="最大化">
+      <nz-icon nzType="border" nzTheme="outline" class="btn-icon" (click)="maximize()"/>
+    </button>
+
+  </div>
+  <div class="title">{{ this.title }}</div>
 </div>

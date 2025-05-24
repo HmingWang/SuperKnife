@@ -5,9 +5,9 @@ import {WindowControlsComponent} from './components/window-controls/window-contr
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, WindowControlsComponent],
-  template: '<app-window-controls></app-window-controls><router-outlet/>',
+  template: '<app-window-controls [title]="this.title" ></app-window-controls><router-outlet/>',
   styles: []
 })
 export class AppComponent {
-  title = 'webui';
+  title = 'Super Knife';
 }
