@@ -5,8 +5,6 @@
 #include <sstream>
 #include <iomanip>
 
-using namespace Napi;
-
 std::string sha256(const std::string &str, const std::string &salt) {
     EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
     const EVP_MD *md = EVP_sha256();
@@ -59,22 +57,3 @@ bool nativeVerifyLogin(const std::string& username, const std::string& password)
     return result;
 }
 
-Napi::Boolean VerifyLogin(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-
-    if (info.Length() < 2 || !info[0].IsString() || !info[1].IsString()) {
-        Napi::TypeError::New(env, "需要两个字符串参数").ThrowAsJavaScriptException();
-        return Napi::Boolean::New(env, false);
-    }
-
-    std::string username = info[0].As<Napi::String>();
-    std::string password = info[1].As<Napi::String>();
-
-    bool result = nativeVerifyLogin(username, password);
-    return Napi::Boolean::New(env, result);
-}
-
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-    exports.Set("verifyLogin", Napi::Function::New(env, VerifyLogin));
-    return exports;
-}

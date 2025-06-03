@@ -1,5 +1,6 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import { registerIpcMain } from './bridge';
 
 let isDev: boolean = false;
 let mainWindow: BrowserWindow | null = null;
@@ -29,30 +30,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(path.resolve(), './dist/renderer/browser/index.html'));
   }
 
-  ipcMain.on('login', async (event, credentials) => {
-    // 这里替换为你的实际登录逻辑
-    // 可以是数据库验证、文件系统验证等
-    const {username, password} = credentials;
 
-    if (username === 'admin' && password === 'password') {
-      return {
-        success: true,
-        token: 'fake-jwt-token',
-        user: {id: 1, username: 'admin'}
-      };
-    } else {
-      throw new Error('Invalid credentials');
-    }
-  });
-  ipcMain.on('minimize-window', async () => {
-    mainWindow?.minimize();
-  });
-  ipcMain.on('maximize-window', async () => {
-    mainWindow?.isMaximized() ? mainWindow?.unmaximize() : mainWindow?.maximize();
-  });
-  ipcMain.on('close-window', async () => {
-    mainWindow?.close();
-  });
 }
 
 // Error Handling
@@ -63,17 +41,16 @@ process.on('uncaughtException', (error) => {
 app.whenReady().then(() => {
 
   isDev = process.env["BUILD_TYPE"] === "dev";
-
+  registerIpcMain(ipcMain);
   createWindow()
 
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
 })
 
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
+})
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
