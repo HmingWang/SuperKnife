@@ -1,12 +1,13 @@
 find_package(OpenSSL REQUIRED)
 
+aux_source_directory(. SRC_LIST)
 
 # 定义 Node.js 原生模块
-add_library(auth SHARED auth.cpp)
+add_library(addon SHARED ${SRC_LIST})
 
 
 # 链接库
-target_link_libraries(auth PRIVATE
+target_link_libraries(addon PRIVATE
   OpenSSL::SSL
   OpenSSL::Crypto
   ${CMAKE_JS_LIB}
@@ -16,14 +17,15 @@ target_link_libraries(auth PRIVATE
 message(STATUS "Node.js include dir: ${NODE_INCLUDE_DIR}")
 message(STATUS "Node-addon-api include dir: ${NODE_ADDON_API_DIR}")
 
-target_include_directories(auth
+target_include_directories(addon
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE ${CMAKE_SOURCE_DIR}/external/sqlite3
+  ${CMAKE_JS_INC}
 )
 
 # 设置输出名称和位置
-set_target_properties(auth PROPERTIES PREFIX "" SUFFIX ".node")
+set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 
 if(MSVC)
-  target_compile_options(auth PRIVATE "/utf-8")
+  target_compile_options(addon PRIVATE "/utf-8")
 endif()

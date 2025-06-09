@@ -1,7 +1,7 @@
-#include "node_addon.h"
+#include "addon.h"
+#include <string>
 #include "auth.h"
-
-using namespace Napi;
+#include <iostream>
 
 Napi::Boolean VerifyLogin(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
@@ -14,6 +14,7 @@ Napi::Boolean VerifyLogin(const Napi::CallbackInfo& info) {
     std::string username = info[0].As<Napi::String>();
     std::string password = info[1].As<Napi::String>();
 
+    std::cout<<"Received username: " << username << ", password: " << password << std::endl;
     bool result = nativeVerifyLogin(username, password);
     return Napi::Boolean::New(env, result);
 }
@@ -22,3 +23,5 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set("verifyLogin", Napi::Function::New(env, VerifyLogin));
     return exports;
 }
+
+

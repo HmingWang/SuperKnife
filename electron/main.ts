@@ -41,7 +41,18 @@ process.on('uncaughtException', (error) => {
 app.whenReady().then(() => {
 
   isDev = process.env["BUILD_TYPE"] === "dev";
-  registerIpcMain(ipcMain);
+  // registerIpcMain(ipcMain);
+
+  ipcMain.on('minimize-window', async () => {
+    BrowserWindow.getFocusedWindow()?.minimize();
+  });
+  ipcMain.on('maximize-window', async () => {
+    BrowserWindow.getFocusedWindow()?.isMaximized() ? BrowserWindow.getFocusedWindow()?.unmaximize() : BrowserWindow.getFocusedWindow()?.maximize();
+  });
+  ipcMain.on('close-window', async () => {
+    BrowserWindow.getFocusedWindow()?.close();
+  });
+
   createWindow()
 
 })
