@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, crashReporter } from 'electron';
 import path from 'path';
 import { registerIpcMain } from './bridge';
 
@@ -39,21 +39,14 @@ process.on('uncaughtException', (error) => {
 });
 
 app.whenReady().then(() => {
-
   isDev = process.env["BUILD_TYPE"] === "dev";
-  // registerIpcMain(ipcMain);
 
-  ipcMain.on('minimize-window', async () => {
-    BrowserWindow.getFocusedWindow()?.minimize();
-  });
-  ipcMain.on('maximize-window', async () => {
-    BrowserWindow.getFocusedWindow()?.isMaximized() ? BrowserWindow.getFocusedWindow()?.unmaximize() : BrowserWindow.getFocusedWindow()?.maximize();
-  });
-  ipcMain.on('close-window', async () => {
-    BrowserWindow.getFocusedWindow()?.close();
-  });
+  console.log(app.getPath('crashDumps'))
 
-  createWindow()
+  createWindow();
+
+  registerIpcMain(ipcMain);
+
 
 })
 

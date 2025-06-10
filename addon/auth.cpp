@@ -1,6 +1,6 @@
 #include "auth.h"
 #include <sqlite3.h>
-#include <openssl/evp.h>  // 使用 EVP API
+#include <openssl/evp.h>  
 #include <openssl/sha.h>
 #include <sstream>
 #include <iomanip>
@@ -13,13 +13,13 @@ std::string sha256(const std::string &str, const std::string &salt) {
 
     std::string salted = str + salt;
 
-    // 计算哈希
+    // compute SHA-256 hash
     EVP_DigestInit_ex(mdctx, md, NULL);
     EVP_DigestUpdate(mdctx, salted.c_str(), salted.size());
     EVP_DigestFinal_ex(mdctx, hash, &hash_len);
     EVP_MD_CTX_free(mdctx);
 
-    // 转换为十六进制字符串
+    // convert to hex string
     std::stringstream ss;
     for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
         ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
@@ -31,7 +31,7 @@ bool nativeVerifyLogin(const std::string& username, const std::string& password)
     sqlite3 *db;
     sqlite3_stmt *stmt;
     bool result = false;
-    std::string dbPath = "users.db";  // 实际应用中应该使用绝对路径
+    std::string dbPath = "./resources/auth.db";  // adjust the path as needed
 
     if(sqlite3_open(dbPath.c_str(), &db) != SQLITE_OK) {
         return false;

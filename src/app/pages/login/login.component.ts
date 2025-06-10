@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       const {username, password} = this.loginForm.value;
 
-      this.electronService.send('minimize-window',{});
+      this.electronService.send('login',{username,password});
     }
   }
 }

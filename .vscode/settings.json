@@ -1,6 +1,6 @@
 {
     "cmake.sourceDirectory": "${workspaceFolder}",
-    "cmake.outputLogEncoding": "auto",
+    "cmake.outputLogEncoding": "utf-8",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "sqltools.useNodeRuntime": true,
