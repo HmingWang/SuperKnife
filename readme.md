@@ -34,3 +34,6 @@ my-angular-app/
 └── tsconfig.json         # TypeScript配置
 ```
 
+## 问题汇总
+
+* 原生c++ addon无法加载，报not connected错误。使用node-gyp没问题，后发现cmake-js编译需要加上${CMAKE_JS_SRC}，inc和lib变量也需要加上。

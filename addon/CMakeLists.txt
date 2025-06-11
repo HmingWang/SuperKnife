@@ -1,9 +1,15 @@
 find_package(OpenSSL REQUIRED)
 
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
+
+
+
+
 aux_source_directory(. SRC_LIST)
 
 # 定义 Node.js 原生模块
-add_library(addon SHARED ${SRC_LIST})
+add_library(addon SHARED ${SRC_LIST} ${CMAKE_JS_SRC})
 
 
 # 链接库
