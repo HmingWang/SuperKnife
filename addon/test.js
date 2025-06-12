@@ -6,7 +6,7 @@ const addon = bindings('addon')
 
 
 // Try the verifyLogin function
-const result = addon.verifyLogin('username', 'password')
+const result = addon.verifyLogin('admin', 'admin123')
 
 // Should print: "Hello from C++! You said: This is a test"
 console.log(result)

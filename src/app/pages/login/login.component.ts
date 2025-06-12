@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute) {
     this.loginForm = this.fb.group({
-      userName: [null, [Validators.required]],
+      username: [null, [Validators.required]],
       password: [null, [Validators.required]],
       remember: [true]
     });
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      userName: [null, [Validators.required]],
+      username: [null, [Validators.required]],
       password: [null, [Validators.required]],
       remember: [true]
     });
@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
   submitForm(): void {
     if (this.loginForm.valid) {
       this.isLoading = true;
+      console.log('Login form submitted:', this.loginForm.value);
       const {username, password} = this.loginForm.value;
 
       this.electronService.send('login',{username,password});

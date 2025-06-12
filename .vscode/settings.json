@@ -8,7 +8,7 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "database": "./data/auth.db",
+            "database": "./resources/auth.db",
             "name": "auth"
         }
     ],
