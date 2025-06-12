@@ -25,6 +25,7 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
     mainWindow.loadURL("http://localhost:4200");
     mainWindow.resizable = true;
+    mainWindow.setSize(320+400,450);
   } else {
     console.log("env:production");
     mainWindow.loadFile(path.join(path.resolve(), './dist/renderer/browser/index.html'));
@@ -42,10 +43,10 @@ app.whenReady().then(() => {
   isDev = process.env["BUILD_TYPE"] === "dev";
 
   console.log(app.getPath('crashDumps'))
+  registerIpcMain(ipcMain);
 
   createWindow();
 
-  registerIpcMain(ipcMain);
 
 
 })

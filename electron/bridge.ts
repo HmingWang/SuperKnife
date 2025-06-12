@@ -6,14 +6,14 @@ import bindings from 'bindings';
 const addon = bindings('addon');
 
 export function registerIpcMain(ipcMain: IpcMain) {
-  ipcMain.on('login', async (event, { username, password }) => {
+  ipcMain.handle('login', async (event, { username, password }) => {
     console.log('Received login request:', { username, password });
     try {
       const result = addon.verifyLogin(username, password);
       console.log('Login verification result:', result);
       return {
         success: result,
-        user: result ? { username } : null
+        username: result ? { username } : null
       };
     } catch (err) {
       console.error('登录验证失败:', err);

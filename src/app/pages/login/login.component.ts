@@ -48,13 +48,15 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  submitForm(): void {
+  async submitForm(): Promise<void> {
     if (this.loginForm.valid) {
       this.isLoading = true;
       console.log('Login form submitted:', this.loginForm.value);
       const {username, password} = this.loginForm.value;
 
-      this.electronService.send('login',{username,password});
+      const result = await this.electronService.invoke('login',{username,password});
+      console.log('Login result:', result);
+      
     }
   }
 }
