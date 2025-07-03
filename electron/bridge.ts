@@ -13,7 +13,8 @@ export function registerIpcMain(ipcMain: IpcMain) {
       console.log('Login verification result:', result);
       return {
         success: result,
-        username: result ? { username } : null
+        username: result ? { username } : null,
+        token: result ? result.token : null
       };
     } catch (err) {
       console.error('登录验证失败:', err);
@@ -31,4 +32,13 @@ export function registerIpcMain(ipcMain: IpcMain) {
     BrowserWindow.getFocusedWindow()?.close();
   });
 
+  ipcMain.on('resize-window', async (event, { width, height }) => {
+    const window = BrowserWindow.getFocusedWindow();
+    if (window) {
+      window.setSize(width, height);
+      console.log(`Window resized to ${width}x${height}`);
+    } else {
+      console.error('No focused window found to resize.');
+    }
+  });
 }

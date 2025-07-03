@@ -12,11 +12,21 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string) {
-    this.electronService.invoke('login', {username, password}).then((response) => {
-      console.log(response);
-      this.storeAuthData(response);
+  async login(username: string, password: string): Promise<boolean> {
+    return this.electronService.invoke('login', {username, password}).then((result) => {
+      console.log(result);
+      if (!result.success) {
+        return false; // Login failed
+      }
+      
+      this.storeAuthData(result);
+      console.log('Login successful:', result);
+      return true; // Login successful
     })
+    .catch((error) => {
+      console.error('Login error:', error);
+      return false; // Handle error
+    });
   }
 
   private storeAuthData(response: any): void {

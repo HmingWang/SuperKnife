@@ -7,6 +7,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.isLoggedIn()) {
+    console.log('User is authenticated');
     return true;
   } else {
     // 可以添加重定向URL，便于登录后跳转回来

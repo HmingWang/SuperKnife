@@ -41,4 +41,8 @@ export class ElectronService {
   invoke(channel: string, data: any): Promise<any> {
     return window.electronAPI.invoke(channel, data);
   }
+
+  resizeWindow(width: number, height: number): void {
+    this.send('resize-window', { width, height });
+  }
 }
