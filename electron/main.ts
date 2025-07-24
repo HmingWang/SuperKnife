@@ -19,18 +19,8 @@ function createWindow() {
     // transparent: true, // 可选：透明背景
     // titleBarStyle: 'hidden'//macos :hiddenInset/hidden仅隐藏标题栏，但显示控制按钮。
     resizable: false,
-
+    icon: path.join(path.resolve(), './dist/renderer/browser/favicon.ico'), // 设置窗口图标
   });
-  // if (isDev) {
-  //   console.log("env:development");
-  //   mainWindow.webContents.openDevTools();
-  //   mainWindow.loadURL("http://localhost:4200/index.html");
-  //   mainWindow.resizable = true;
-  //   mainWindow.setSize(320+400,450);
-  // } else {
-  //   console.log("env:production");
-  //   mainWindow.loadFile(path.join(path.resolve(), './dist/renderer/browser/index.html'));
-  // }
 
   if (isDev) {
 
