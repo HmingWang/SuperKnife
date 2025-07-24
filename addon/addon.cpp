@@ -6,7 +6,7 @@
 Napi::String Method(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
-    return Napi::String::New(env, "world"); 
+    return Napi::String::New(env, "world");
 }
 
 Napi::Boolean VerifyLogin(const Napi::CallbackInfo &info)
@@ -29,11 +29,22 @@ Napi::Boolean VerifyLogin(const Napi::CallbackInfo &info)
     return Napi::Boolean::New(env, result);
 }
 
+Napi::String Base64Encode(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    return Napi::String::New(env, "null");
+}
+
+Napi::String Base64Decode(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    return Napi::String::New(env, "null");
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
     std::cout << "Initializing addon..." << std::endl;
     exports.Set(Napi::String::New(env, "verifyLogin"), Napi::Function::New(env, VerifyLogin));
-    exports.Set(Napi::String::New(env, "hello"), Napi::Function::New(env, Method));
 
     std::cout << "Addon initialized." << std::endl;
     return exports;
