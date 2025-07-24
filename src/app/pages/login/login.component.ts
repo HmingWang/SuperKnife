@@ -5,7 +5,7 @@ import { NzFormControlComponent, NzFormDirective, NzFormItemComponent } from 'ng
 import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ElectronService } from '../../core/electron.service';
 
 @Component({
@@ -24,6 +24,7 @@ import { ElectronService } from '../../core/electron.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
   loginForm!: FormGroup;
   isLoading = false;
   electronService: ElectronService = new ElectronService();
@@ -31,8 +32,7 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute) {
+    private router: Router) {
     this.loginForm = this.fb.group({
       username: [null, [Validators.required]],
       password: [null, [Validators.required]],
@@ -46,9 +46,11 @@ export class LoginComponent implements OnInit {
       password: [null, [Validators.required]],
       remember: [true]
     });
+    this.electronService.resizeWindow(320, 450); // Resize window after login
+
   }
 
-  async submitForm(): Promise<void> {
+  submitForm() {
     if (this.loginForm.valid) {
       this.isLoading = true;
       console.log('Login form submitted:', this.loginForm.value);
@@ -59,7 +61,8 @@ export class LoginComponent implements OnInit {
         console.log('Login result:', result);
         if (result) {
           this.message.success('登录成功');
-          this.router.navigateByUrl('/dashboard');
+          this.router.navigate(['/dashboard']);
+          this.electronService.resizeWindow(800, 600); // Resize window after login
         } else {
           this.message.error('登录失败，请检查用户名和密码');
         }
@@ -67,10 +70,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         console.error('Login error:', error);
         this.message.error('登录失败，请稍后再试');
-      });
-
-     
-  
+      });  
     }
   }
 }

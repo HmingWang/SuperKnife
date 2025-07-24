@@ -11,6 +11,8 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   } else {
     // 可以添加重定向URL，便于登录后跳转回来
+    console.log('User is not authenticated, redirecting to login');
+
     router.navigate(['/login'], {
       queryParams: { returnUrl: state.url }
     });

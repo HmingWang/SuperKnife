@@ -5,7 +5,7 @@ import {WindowControlsComponent} from './components/window-controls/window-contr
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, WindowControlsComponent],
-  template: '<app-window-controls [title]="this.title" ></app-window-controls><router-outlet/>',
+  template: '<app-window-controls [title]="this.title" ></app-window-controls><div style="margin-top: 36px;"><router-outlet/></div>',
   styles: []
 })
 export class AppComponent {

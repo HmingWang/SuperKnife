@@ -38,7 +38,7 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
     mainWindow.loadURL("http://localhost:4200/index.html");
     mainWindow.resizable = true;
-    mainWindow.setSize(320 + 400, 450);
+    mainWindow.setSize(320, 450);
   } else {
     console.log("env:production");
 
