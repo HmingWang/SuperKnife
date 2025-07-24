@@ -7,10 +7,11 @@ import { FirewallComponent } from './pages/firewall/firewall.component';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent,canActivate: [authGuard], 
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], canActivateChild: [authGuard],
     // Add child routes for the dashboard here
     children: [
-      { path: 'firewall', component: FirewallComponent,outlet:'inner-content' },
+      {path: '', redirectTo: 'firewall', pathMatch: 'full' }, // Default child route
+      { path: 'firewall', component: FirewallComponent},
     ]
   },
   { path: '**', redirectTo: 'login', pathMatch: 'full' }, // Catch-all redirect to login
