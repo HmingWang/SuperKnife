@@ -1,6 +1,8 @@
-<p>base64 works! </p>
-<a routerLink="/login">Go to login</a><br/>
-<a routerLink="/dashboard/firewall">Go to Firewall</a><br/>
-<a routerLink="/dashboard/firewall">Go to Firewall</a><br/>
-<a routerLink="/dashboard/base64">Go to Base64</a><br/>
-<a routerLink="/dashboard">Go to Dashboard</a><br/>
+输入：
+<textarea rows="4"  nz-input [(ngModel)]="inputValue"></textarea>
+<button nz-button nzType="primary" (click)="encode()">编码</button>
+<button nz-button nzType="primary" (click)="decode()">解码</button>
+<label nz-checkbox [(ngModel)]="isWrapped">换行</label>
+<br/>
+输出：
+<textarea rows="4"  nz-input [(ngModel)]="outputValue"></textarea>

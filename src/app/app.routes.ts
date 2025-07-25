@@ -14,9 +14,10 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'base64', pathMatch: 'full' }, // Default child route
       { path: 'firewall', component: FirewallComponent },
-      { path: 'base64', component: Base64Component }
+      { path: 'base64', component: Base64Component },
+      { path: '**', redirectTo: 'base64', pathMatch: 'full' } // Catch-all for dashboard
     ]
   },
-  // { path: '**', redirectTo: 'login', pathMatch: 'full' }, // Catch-all redirect to login
+  { path: '**', redirectTo: 'login', pathMatch: 'full' }, // Catch-all redirect to login
 
 ];
