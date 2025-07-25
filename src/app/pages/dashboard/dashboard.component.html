@@ -1,42 +1,44 @@
 <nz-layout>
-  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
-    <div class="logo"></div>
-    <ul nz-menu nzTheme="dark" nzMode="inline">
-      <li nz-submenu nzTitle="系统工具" nzIcon="windows">
-        <ul>
-          <li nz-menu-item><a routerLink="firewall">防火墙配置</a></li>
-          <li nz-menu-item>Bill</li>
-          <li nz-menu-item>Alex</li>
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="dark" nzMode="inline">
+            <li nz-submenu nzTitle="系统工具" nzIcon="windows">
+                <ul>
+                    <li nz-menu-item  routerLink="firewall"> 防火墙配置</li>
+                    <li nz-menu-item>Bill</li>
+                    <li nz-menu-item>Alex</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="加密解密" nzIcon="lock">
+                <ul>
+                    <li nz-menu-item  routerLink="base64"> Base64</li>
+                    <li nz-menu-item>SM2</li>
+                    <li nz-menu-item>SM3</li>
+                    <li nz-menu-item>SM4</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="消息队列" nzIcon="message">
+                <ul>
+                    <li nz-menu-item>Kafka</li>
+                    <li nz-menu-item>MQ</li>
+                </ul>
+            </li>
         </ul>
-      </li>
-      <li nz-submenu nzTitle="加密解密" nzIcon="lock">
-        <ul>
-          <li nz-menu-item>Base 64</li>
-          <li nz-menu-item>SM2</li>
-          <li nz-menu-item>SM3</li>
-          <li nz-menu-item>SM4</li>
-        </ul>
-      </li>
-      <li nz-submenu nzTitle="消息队列" nzIcon="message">
-        <ul>
-          <li nz-menu-item>Kafka</li>
-          <li nz-menu-item>MQ</li>
-        </ul>
-      </li>
-    </ul>
-  </nz-sider>
-  <nz-layout>
-    <nz-header>
-      <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-        (click)="isCollapsed = !isCollapsed" />
-    </nz-header>
-    <nz-content>
-      <nz-breadcrumb>
-        <nz-breadcrumb-item>User</nz-breadcrumb-item>
-        <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
-      </nz-breadcrumb>
-      <div class="inner-content"><router-outlet></router-outlet></div>
-    </nz-content>
-    <nz-footer><app-footer /></nz-footer>
-  </nz-layout>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+                (click)="isCollapsed = !isCollapsed" />
+        </nz-header>
+        <nz-content>
+            <nz-breadcrumb>
+                <nz-breadcrumb-item>User</nz-breadcrumb-item>
+                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+            </nz-breadcrumb>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+        <nz-footer><app-footer /></nz-footer>
+    </nz-layout>
 </nz-layout>

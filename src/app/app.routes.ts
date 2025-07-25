@@ -3,17 +3,20 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { authGuard } from './guards/auth.guard';
 import { FirewallComponent } from './pages/firewall/firewall.component';
+import { Base64Component } from './pages/base64/base64.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], canActivateChild: [authGuard],
+  {
+    path: 'dashboard', component: DashboardComponent,
     // Add child routes for the dashboard here
     children: [
-      {path: '', redirectTo: 'firewall', pathMatch: 'full' }, // Default child route
-      { path: 'firewall', component: FirewallComponent},
+      { path: '', redirectTo: 'base64', pathMatch: 'full' }, // Default child route
+      { path: 'firewall', component: FirewallComponent },
+      { path: 'base64', component: Base64Component }
     ]
   },
-  { path: '**', redirectTo: 'login', pathMatch: 'full' }, // Catch-all redirect to login
+  // { path: '**', redirectTo: 'login', pathMatch: 'full' }, // Catch-all redirect to login
 
 ];
