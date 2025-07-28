@@ -18,11 +18,24 @@ export class Base64Component {
   constructor(private electronService: ElectronService) { } // Replace 'any' with the actual type if available
 
   decode() {
-    console.log('decode');
+    this.electronService.invoke('decodeBase64', { data: this.inputValue.replace(/\n/g, '') }) // Remove newlines for decoding
+      .then((result: string) => {
+        this.outputValue = result; // Set the output value to the result of decoding
+      })
+      .catch((error: any) => {
+        console.error('Error decoding Base64:', error);
+        this.outputValue = 'Error decoding Base64'; // Handle error case
+      });
   }
   encode() {
-    console.log('encode');
-    this.electronService.invoke('encodeBase64', { data: this.inputValue, wrap: this.isWrapped });
+    this.electronService.invoke('encodeBase64', { data: this.inputValue, wrap: this.isWrapped })
+      .then((result: string) => {
+        this.outputValue = result; // Set the output value to the result of encoding
+      })
+      .catch((error: any) => {
+        console.error('Error encoding Base64:', error);
+        this.outputValue = 'Error encoding Base64'; // Handle error case
+      });
   }
 
 

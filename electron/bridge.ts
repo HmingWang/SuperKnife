@@ -1,27 +1,10 @@
-import path from 'path';
 import { IpcMain } from 'electron';
 import { BrowserWindow } from 'electron';
-import bindings from 'bindings';
+import { AddonService } from './addon';
 
-const addon = bindings('addon');
+const addonService = new AddonService();
 
 export function registerIpcMain(ipcMain: IpcMain) {
-  ipcMain.handle('login', async (event, { username, password }) => {
-    console.log('Received login request:', { username, password });
-    try {
-      const result = addon.verifyLogin(username, password);
-      console.log('Login verification result:', result);
-      return {
-        success: result,
-        username: result ? { username } : null,
-        token: result ? result.token : null
-      };
-    } catch (err) {
-      console.error('登录验证失败:', err);
-      return { success: false, error: err };
-    }
-
-  });
   ipcMain.on('minimize-window', async () => {
     BrowserWindow.getFocusedWindow()?.minimize();
   });
@@ -40,5 +23,18 @@ export function registerIpcMain(ipcMain: IpcMain) {
     } else {
       console.error('No focused window found to resize.');
     }
+  });
+  ipcMain.handle('login', async (event, { username, password }) => {
+    const result = addonService.verifyLogin(username, password);
+    return result;
+  });
+  ipcMain.handle('encodeBase64', async (event, { data, wrap }) => {
+    const result = addonService.encodeBase64(data, wrap);
+    return result;
+  });
+
+  ipcMain.handle('decodeBase64', async (event, { data }) => {
+    const result = addonService.decodeBase64(data);
+    return result;
   });
 }

@@ -2,12 +2,9 @@
 #include <string>
 #include "auth.h"
 #include <iostream>
+#include "base64.h"
 
-Napi::String Method(const Napi::CallbackInfo &info)
-{
-    Napi::Env env = info.Env();
-    return Napi::String::New(env, "world");
-}
+
 
 Napi::Boolean VerifyLogin(const Napi::CallbackInfo &info)
 {
@@ -32,19 +29,42 @@ Napi::Boolean VerifyLogin(const Napi::CallbackInfo &info)
 Napi::String Base64Encode(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
-    return Napi::String::New(env, "null");
+    if (info.Length() < 1 || !info[0].IsString())
+    {
+        Napi::TypeError::New(env, "String expected").ThrowAsJavaScriptException();
+        return Napi::String::New(env, "null");
+    }
+    std::string input = info[0].As<Napi::String>();
+    bool wrap = false;
+    if (info.Length() > 1 && info[1].IsBoolean())
+    {
+        wrap = info[1].As<Napi::Boolean>();
+    }
+    std::string output = base64_encode(input, wrap);
+    return Napi::String::New(env, output);
 }
 
 Napi::String Base64Decode(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
-    return Napi::String::New(env, "null");
+    if (info.Length() < 1 || !info[0].IsString())
+    {
+        Napi::TypeError::New(env, "String expected").ThrowAsJavaScriptException();
+        return Napi::String::New(env, "null");
+    }
+    std::string input = info[0].As<Napi::String>();
+    std::string output = base64_decode(input);
+    return Napi::String::New(env, output);
 }
+
+
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
     std::cout << "Initializing addon..." << std::endl;
     exports.Set(Napi::String::New(env, "verifyLogin"), Napi::Function::New(env, VerifyLogin));
+    exports.Set(Napi::String::New(env, "base64Encode"), Napi::Function::New(env, Base64Encode));
+    exports.Set(Napi::String::New(env, "base64Decode"), Napi::Function::New(env, Base64Decode));
 
     std::cout << "Addon initialized." << std::endl;
     return exports;
