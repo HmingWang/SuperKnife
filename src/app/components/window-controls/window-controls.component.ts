@@ -1,7 +1,8 @@
-import {Component, input, Input} from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 
-import {ElectronService} from '../../core/electron.service';
-import {NzIconDirective} from 'ng-zorro-antd/icon';
+import { ElectronService } from '../../core/electron.service';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { StatusService } from '../../services/status.service';
 
 @Component({
   selector: 'app-window-controls',
@@ -18,19 +19,22 @@ export class WindowControlsComponent {
 
   @Input() title!: string;
 
+  @Output() isCollapsed: boolean = false;
+  @Input() showMenuButton: boolean = false;
 
-
-  private electronService: ElectronService=new ElectronService();
+  constructor(private electronService: ElectronService,
+    private statusService: StatusService
+  ) { }
 
   minimize() {
-    this.electronService.send('minimize-window',{});
+    this.electronService.send('minimize-window', {});
   }
 
   maximize() {
-    this.electronService.send('maximize-window',{});
+    this.electronService.send('maximize-window', {});
   }
 
   close() {
-    this.electronService.send('close-window',{});
+    this.electronService.send('close-window', {});
   }
 }

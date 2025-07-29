@@ -7,6 +7,7 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ElectronService } from '../../core/electron.service';
+import { StatusService } from '../../services/status.service';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,8 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private statusService: StatusService) {
     this.loginForm = this.fb.group({
       username: [null, [Validators.required]],
       password: [null, [Validators.required]],
@@ -47,7 +49,10 @@ export class LoginComponent implements OnInit {
       remember: [true]
     });
     this.electronService.resizeWindow(320, 450); // Resize window after login
-
+    
+    this.statusService.setLoginStatus(false); // Reset login status
+    this.statusService.setMenuButtonVisibility(false); // Hide menu button initially
+    
   }
 
   submitForm() {

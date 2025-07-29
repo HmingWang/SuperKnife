@@ -9,7 +9,7 @@
   right: 0;
   height: 36px;
 }
-.control-button {
+.control-button-group{
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,9 +22,7 @@
   align-items: center;
   width: 100%;
 }
-.window-close,
-.window-minimize,
-.window-maximize {
+button {
   width: 12px;
   height: 12px;
   border-radius: 50%;
