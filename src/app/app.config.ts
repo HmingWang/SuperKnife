@@ -15,6 +15,7 @@ import * as AllIcons from '@ant-design/icons-angular/icons';
 // 按需导入 NG-ZORRO 模块
 import {authInterceptor} from './interceptors/auth.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideStore } from '@ngrx/store';
 
 registerLocaleData(en);
 
@@ -33,7 +34,7 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(en_US),
     provideAnimationsAsync(),
     provideAnimations(),
-    provideHttpClient(
-      withInterceptors([authInterceptor])
-    )],
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideStore()
+],
 };
