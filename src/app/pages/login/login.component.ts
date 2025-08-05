@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
   electronService: ElectronService = new ElectronService();
+  showMenuButton = false;
 
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
@@ -50,9 +51,11 @@ export class LoginComponent implements OnInit {
     });
     this.electronService.resizeWindow(320, 450); // Resize window after login
     
-    this.statusService.setLoginStatus(false); // Reset login status
-    this.statusService.setMenuButtonVisibility(false); // Hide menu button initially
-    
+    this.statusService.showMenuButton.asObservable().subscribe((visible: boolean) => {
+      if (visible) {
+        this.showMenuButton = visible;
+      }
+    });    
   }
 
   submitForm() {

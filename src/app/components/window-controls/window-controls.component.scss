@@ -9,20 +9,25 @@
   right: 0;
   height: 36px;
 }
-.control-button-group{
+
+.control-button-group {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   position: fixed;
 }
-.title{
+
+.title {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
 }
-button {
+
+.window-close,
+.window-minimize,
+.window-maximize {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -35,10 +40,12 @@ button {
   background-color: transparent;
   position: relative;
   outline: 1px solid rgba(0, 0, 0, 0.1);
-  outline-offset: -1px; /* 确保轮廓在内部 */
+  outline-offset: -1px;
+  /* 确保轮廓在内部 */
   -webkit-app-region: no-drag;
 
 }
+
 ///* 使用伪元素添加边框 */
 //.macos-close::before,
 //.macos-minimize::before,
@@ -74,9 +81,22 @@ button {
   background-color: #27c93f;
 }
 
+.window-menu {
+  width: 12px;
+  height: 12px;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+    /* 确保轮廓在内部 */
+  -webkit-app-region: no-drag;
+  color:black;
+  margin-left: 8px;
+}
 
 .window-controls:hover .btn-icon {
   opacity: 1;
   //scale: 120%;
 }
-

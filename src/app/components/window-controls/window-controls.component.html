@@ -12,9 +12,9 @@
       <nz-icon nzType="plus" nzTheme="outline" class="btn-icon" (click)="maximize()" />
     </button>
     @if(showMenuButton){
-    <button title="菜单">
-      <nz-icon class="menu" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-        (click)="isCollapsed = !isCollapsed" />
+    <button class="window-menu" title="菜单">
+      <nz-icon [nzType]="isCollapsed ? 'left-square' : 'right-square'" nzTheme="outline"
+        (click)="changeCollapse()" />
     </button>
     }
   </div>

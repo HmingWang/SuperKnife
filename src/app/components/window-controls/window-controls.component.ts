@@ -15,16 +15,27 @@ import { StatusService } from '../../services/status.service';
 
 })
 export class WindowControlsComponent {
+  changeCollapse() {
+    this.statusService.isCollapsed.next(!this.statusService.isCollapsed.value);
+    this.isCollapsed=this.statusService.isCollapsed.value;
+  }
 
 
   @Input() title!: string;
 
-  @Output() isCollapsed: boolean = false;
+  isCollapsed: boolean = false;
   @Input() showMenuButton: boolean = false;
 
   constructor(private electronService: ElectronService,
     private statusService: StatusService
   ) { }
+
+
+  ngOnInit(): void {
+    this.statusService.showMenuButton.asObservable().subscribe((visible: boolean) => {
+      this.showMenuButton = visible;
+    });
+  }
 
   minimize() {
     this.electronService.send('minimize-window', {});
