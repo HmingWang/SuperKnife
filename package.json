@@ -1,7 +1,8 @@
 {
   "name": "super-knife",
   "version": "0.0.0",
-  "main": "dist/electron/main.js",
+  "author": "Hming.Wang",
+  "main": "./dist/electron/main.js",
   "description": "Angular Electron App",
   "scripts": {
     "start": "npm-run-all -p el:serve ng:serve",
@@ -11,7 +12,7 @@
     "ng:watch": "ng build --watch --configuration development",
     "ng:test": "ng test",
     "ng:e2e": "ng e2e",
-    "el:build": "npm run ng:build && npm run el:tsc &&  electron .",
+    "el:build": "npm run ng:build && npm run el:tsc && electron .",
     "el:serve": "wait-on http-get://localhost:4200/ && npm run el:tsc && cross-env BUILD_TYPE=dev electron .",
     "el:forge": "electron-forge start",
     "el:package": "electron-forge package",

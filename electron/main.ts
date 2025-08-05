@@ -22,6 +22,9 @@ function createWindow() {
     icon: path.join(path.resolve(), './dist/renderer/browser/favicon.ico'), // 设置窗口图标
   });
 
+
+  isDev = process.env["BUILD_TYPE"] === "dev";
+
   if (isDev) {
 
     console.log("env:development");
@@ -35,14 +38,19 @@ function createWindow() {
     // Path when running electron executable
     let pathIndex = './index.html';
 
-    if (fs.existsSync(path.join(__dirname, './dist/renderer/browser/index.html'))) {
+    if (fs.existsSync(path.join(path.resolve(), './dist/renderer/browser/index.html'))) {
       // Path when running electron in local folder
       pathIndex = './dist/renderer/browser/index.html';
     }
 
-    const fullPath = path.join(__dirname, pathIndex);
+    const fullPath = path.join(path.resolve(), pathIndex);
+    console.log("Full path to index.html: ", fullPath);
     const url = `file://${path.resolve(fullPath).replace(/\\/g, '/')}`;
+    console.log("Loading URL: ", url);
     mainWindow.loadURL(url);
+
+    mainWindow.webContents.openDevTools();
+
   }
 
 
