@@ -1,4 +1,12 @@
 find_package(OpenSSL REQUIRED)
+if(NOT OpenSSL_FOUND)
+  message(FATAL_ERROR "OpenSSL not found")
+  else()
+  message(STATUS "OpenSSL found: ${OPENSSL_VERSION}")
+  message(STATUS "OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
+  message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+  message(STATUS "OpenSSL library dir: ${OPENSSL_LIB_DIR}")
+endif()
 
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
@@ -19,6 +27,7 @@ target_link_libraries(addon PRIVATE
   ${CMAKE_JS_LIB}
   sqlite3
 )
+target_link_directories(addon PRIVATE ${OPENSSL_LIB_DIR})
 
 message(STATUS "Node.js include dir: ${NODE_INCLUDE_DIR}")
 message(STATUS "Node-addon-api include dir: ${NODE_ADDON_API_DIR}")
