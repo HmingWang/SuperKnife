@@ -2,6 +2,8 @@ find_package(OpenSSL REQUIRED)
 if(NOT OpenSSL_FOUND)
   message(FATAL_ERROR "OpenSSL not found")
   else()
+  set(OPENSSL_LIB_DIR /opt/homebrew/Cellar/openssl@3/3.5.1/lib)
+
   message(STATUS "OpenSSL found: ${OPENSSL_VERSION}")
   message(STATUS "OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
   message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
@@ -19,15 +21,14 @@ aux_source_directory(. SRC_LIST)
 # 定义 Node.js 原生模块
 add_library(addon SHARED ${SRC_LIST} ${CMAKE_JS_SRC})
 
+target_link_directories(addon PRIVATE ${OPENSSL_LIB_DIR})
 
 # 链接库
 target_link_libraries(addon PRIVATE
-  OpenSSL::SSL
-  OpenSSL::Crypto
+ssl  crypto
   ${CMAKE_JS_LIB}
   sqlite3
 )
-target_link_directories(addon PRIVATE ${OPENSSL_LIB_DIR})
 
 message(STATUS "Node.js include dir: ${NODE_INCLUDE_DIR}")
 message(STATUS "Node-addon-api include dir: ${NODE_ADDON_API_DIR}")

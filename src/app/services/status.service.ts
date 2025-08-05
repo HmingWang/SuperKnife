@@ -1,27 +1,12 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StatusService {
 
-  
-  isLogin: boolean = false;
-  menuButtonVisible: boolean = false;
 
-  constructor() { }
-
-  setLoginStatus(status: boolean) {
-    this.isLogin = status;
-  }
-  setMenuButtonVisibility(visible: boolean) {
-    this.menuButtonVisible = visible;
-  }
-  getLoginStatus(): boolean {
-    return this.isLogin;
-  }
-  getMenuButtonVisibility(): boolean {
-    return this.menuButtonVisible;
-  }
+  public showMenuButton:BehaviorSubject<boolean>= new BehaviorSubject<boolean>(false);
 
 }

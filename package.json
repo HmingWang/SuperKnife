@@ -17,7 +17,7 @@
     "el:package": "electron-forge package",
     "el:make": "electron-forge make",
     "cmake:config": "cmake-js configure",
-    "cmake:build": "cmake-js build",
+    "cmake:build": "cmake-js build --preset Darwin",
     "cmake:rebuild": "cmake-js rebuild",
     "cmake:build:debug": "cmake-js build --config Debug",
     "cmake:build:release": "cmake-js build --config Release",
