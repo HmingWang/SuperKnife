@@ -1,13 +1,13 @@
 .window-controls {
   position: absolute;
   display: flex;
-  padding: 12px;
+  padding:8px;
   -webkit-app-region: drag;
   background-color: yellowgreen;
   top: 0;
   left: 0;
   right: 0;
-  height: 36px;
+  height: 28px;
 }
 
 .control-button-group {
@@ -62,10 +62,11 @@
 
 /* 图标样式 */
 .btn-icon {
-  width: 6px;
-  height: 6px;
+  width: 0.6em;
+  height: 0.6em;
   opacity: 0;
   transition: opacity 0.2s ease;
+  font-size: 14px;
 }
 
 /* 按钮颜色和悬停效果 */

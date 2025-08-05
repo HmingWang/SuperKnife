@@ -30,6 +30,14 @@ include_directories(
   ${NODE_ADDON_API_DIR} # napi.h 所在目录
 )
 
+
+# 本地变量
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/local.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/local.cmake")
+else()
+  message(STATUS "No local.cmake found, using default settings.")
+endif()
+
 # 添加子目录
 add_subdirectory(addon)
 add_subdirectory(external/sqlite3)
