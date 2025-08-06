@@ -9,7 +9,7 @@ std::string base64_encode(const std::string &in, const bool wrap) {
     BUF_MEM *bufferPtr;
 
     b64 = BIO_new(BIO_f_base64());
-    if (wrap) {
+    if (!wrap) {
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL); // No newlines
     }
     bio = BIO_new(BIO_s_mem());
