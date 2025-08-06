@@ -41,12 +41,13 @@ endif()
 # 添加子目录
 add_subdirectory(addon)
 add_subdirectory(external/sqlite3)
+add_subdirectory(addon/crypto)
 
 
 
 # #############|test|################
-# if(WITH_TESTS)
-#   include(CTest)
-#   include(catch2)
-#   add_subdirectory(tests)
-# endif()
+if(WITH_TESTS)
+  include(CTest)
+  include(catch2)
+  add_subdirectory(addon/tests)
+endif()
