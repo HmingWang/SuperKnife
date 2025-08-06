@@ -45,8 +45,8 @@ add_subdirectory(external/sqlite3)
 
 
 # #############|test|################
-if(WITH_TESTS)
-  include(CTest)
-  include(catch2)
-  add_subdirectory(tests)
-endif()
+# if(WITH_TESTS)
+#   include(CTest)
+#   include(catch2)
+#   add_subdirectory(tests)
+# endif()

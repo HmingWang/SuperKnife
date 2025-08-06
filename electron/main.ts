@@ -3,11 +3,10 @@ import path from 'path';
 import fs from 'fs';
 import { registerIpcMain } from './bridge';
 
-let isDev: boolean = false;
+let isDev: boolean = process.env["BUILD_TYPE"] === "dev";
 let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
-
 
   mainWindow = new BrowserWindow({
     width: 320,
@@ -23,7 +22,6 @@ function createWindow() {
   });
 
 
-  isDev = process.env["BUILD_TYPE"] === "dev";
 
   if (isDev) {
 
@@ -52,8 +50,6 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
 
   }
-
-
 }
 
 // Error Handling
@@ -62,15 +58,11 @@ process.on('uncaughtException', (error) => {
 });
 
 app.whenReady().then(() => {
-  isDev = process.env["BUILD_TYPE"] === "dev";
 
   console.log(app.getPath('crashDumps'))
   registerIpcMain(ipcMain);
 
   createWindow();
-
-
-
 })
 
 app.on('activate', () => {

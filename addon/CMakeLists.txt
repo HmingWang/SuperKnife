@@ -1,18 +1,16 @@
 find_package(OpenSSL REQUIRED)
+
 if(NOT OpenSSL_FOUND)
   message(FATAL_ERROR "OpenSSL not found")
-  else()
+else()
   # set(OPENSSL_LIB_DIR /opt/homebrew/Cellar/openssl@3/3.5.1/lib)
-
   message(STATUS "OpenSSL found: ${OPENSSL_VERSION}")
   message(STATUS "OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
   message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
   message(STATUS "OpenSSL library dir: ${OPENSSL_LIB_DIR}")
 endif()
 
-
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
-
 
 message(STATUS "cmake-js include : ${CMAKE_JS_INC}")
 message(STATUS "cmake-js library : ${CMAKE_JS_LIB}")
@@ -33,7 +31,7 @@ target_link_directories(addon PRIVATE ${OPENSSL_LIB_DIR})
 
 # 链接库
 target_link_libraries(addon PRIVATE
-ssl  crypto
+  OpenSSL::SSL OpenSSL::Crypto
   ${CMAKE_JS_LIB}
   sqlite3
 )
