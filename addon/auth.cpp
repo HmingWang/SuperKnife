@@ -34,9 +34,9 @@ bool nativeVerifyLogin(const std::string &username, const std::string &password)
 {
     try
     {
-        SQLiteDB db("./resources/auth.db");
+        SQLiteDB db("./resources/store.db");
         std::cout << "Database opened successfully." << std::endl;
-        auto result = db.query("SELECT password_hash, salt FROM users WHERE username = ?", {username});
+        auto result = db.query("SELECT password, salt FROM userinfo WHERE username = ?", {username});
         auto passwordHash = result.empty() ? "" : result[0][0];
         auto salt = result.empty() ? "" : result[0][1];
         std::cout << "Query executed successfully." << std::endl;

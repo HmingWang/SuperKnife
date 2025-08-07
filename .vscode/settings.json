@@ -3,14 +3,13 @@
     "cmake.outputLogEncoding": "utf-8",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.useCMakePresets": "always",
     "sqltools.useNodeRuntime": true,
     "sqltools.connections": [
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "database": "./resources/auth.db",
-            "name": "auth"
+            "database": "./resources/store.db",
+            "name": "store"
         }
     ],
     "files.associations": {
