@@ -1,7 +1,7 @@
 #include "addon.h"
 
 #include "api.h"
-
+#include <iostream>
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {

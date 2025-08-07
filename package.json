@@ -23,6 +23,7 @@
     "cmake:build:debug": "cmake-js build --config Debug",
     "cmake:build:release": "cmake-js build --config Release",
     "cmake:test": "cmake-js test",
+    "cmake:clean": "cmake-js clean",
     "el:tsc": "tsc -p tsconfig.electron.json"
   },
   "private": true,

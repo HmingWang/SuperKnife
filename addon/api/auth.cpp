@@ -1,5 +1,5 @@
 #include "auth.h"
-#include <sqlite3.hpp>
+#include "sqlitedb.h"
 #include <sstream>
 #include <iomanip>
 #include <iostream>

@@ -1,9 +1,10 @@
 
+include(msvc)
 
-aux_source_directory(. api_src)
-add_library(api ${api_src} ${CMAKE_JS_SRC})
-target_link_libraries(api PRIVATE ${CMAKE_JS_LIB} db crypto)
-target_include_directories(api PRIVATE 
+aux_source_directory(. API_SRC)
+add_library(api SHARED ${API_SRC} ${CMAKE_JS_SRC})
+target_link_libraries(api PUBLIC ${CMAKE_JS_LIB} dbutils crypto msvc_inf)
+target_include_directories(api PUBLIC 
     ${CMAKE_JS_INC}   
     ${NODE_INCLUDE_DIR}
     ${NODE_ADDON_API_DIR}
