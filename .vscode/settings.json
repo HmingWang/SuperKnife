@@ -3,6 +3,7 @@
     "cmake.outputLogEncoding": "utf-8",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.buildDirectory": "${workspaceFolder}/build",
+    "terminal.integrated.fontFamily": "MesloLGS NF",
     "sqltools.useNodeRuntime": true,
     "sqltools.connections": [
         {
