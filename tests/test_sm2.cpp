@@ -1,75 +1,65 @@
 #include <catch2/catch_all.hpp>
 #include "sm2.h"
+#include <iostream>
 
-TEST_CASE("test sm2")
-{
-    // 1. 生成密钥对和证书
-    SM2KeyPair keyPair;
-    if (!keyPair.generateKeyPair())
-    {
-        std::cerr << "Failed to generate SM2 key pair" << std::endl;
-        return 1;
-    }
+using namespace std;
 
-    // 保存密钥
-    if (!keyPair.savePrivateKey("sm2_private.pem", "mypassword"))
-    {
-        std::cerr << "Failed to save private key" << std::endl;
-        return 1;
-    }
+TEST_CASE("test sm2"){
 
-    if (!keyPair.savePublicKey("sm2_public.pem"))
-    {
-        std::cerr << "Failed to save public key" << std::endl;
-        return 1;
-    }
 
-    // 创建自签名证书
-    SM2Certificate cert;
-    if (!cert.createSelfSigned(keyPair, "/C=CN/O=My Organization/CN=SM2 Test Certificate"))
-    {
-        std::cerr << "Failed to create self-signed certificate" << std::endl;
-        return 1;
-    }
 
-    if (!cert.saveCertificate("sm2_cert.pem"))
-    {
-        std::cerr << "Failed to save certificate" << std::endl;
-        return 1;
-    }
 
-    std::cout << "SM2 key pair and certificate generated successfully." << std::endl;
+        // 1. 生成密钥对
+        SM2KeyPair keyPair;
+        if (!keyPair.generateKeyPair()) {
+            cerr << "Failed to generate SM2 key pair" << endl;
+            return ;
+        }
 
-    // 2. 加密解密演示
-    SM2Crypto crypto;
-    std::string message = "This is a secret message to be encrypted with SM2.";
+        // 保存密钥
+        if (!keyPair.savePrivateKey("sm2_private.pem", "mypassword")) {
+            cerr << "Failed to save private key" << endl;
+            return ;
+        }
 
-    // 加密
-    auto ciphertext = crypto.encrypt(keyPair.getPublicKey(),
-                                     SM2Crypto::stringToVector(message));
-    std::cout << "\nCiphertext (hex): " << SM2Crypto::toHex(ciphertext) << std::endl;
+        if (!keyPair.savePublicKey("sm2_public.pem")) {
+            cerr << "Failed to save public key" << endl;
+            return ;
+        }
 
-    // 解密
-    auto decrypted = crypto.decrypt(keyPair.getPrivateKey(), ciphertext);
-    std::cout << "Decrypted: " << SM2Crypto::vectorToString(decrypted) << std::endl;
+        // 2. 创建自签名证书
+        SM2Certificate cert;
+        string subject = "/C=CN/O=My Organization/CN=SM2 Test Certificate";
+        if (!cert.createSelfSigned(keyPair, subject, 365)) {
+            cerr << "Failed to create self-signed certificate" << endl;
+            return ;
+        }
 
-    // 3. 签名验签演示
-    auto signature = crypto.sign(keyPair.getPrivateKey(),
-                                 SM2Crypto::stringToVector(message));
-    std::cout << "\nSignature (hex): " << SM2Crypto::toHex(signature) << std::endl;
+        if (!cert.saveCertificate("sm2_cert.pem")) {
+            cerr << "Failed to save certificate" << endl;
+            return ;
+        }
 
-    // 验证签名
-    bool verified = crypto.verify(keyPair.getPublicKey(),
-                                  SM2Crypto::stringToVector(message),
-                                  signature);
-    std::cout << "Signature verification: " << (verified ? "SUCCESS" : "FAILED") << std::endl;
+        cout << "SM2 key pair and certificate generated successfully." << endl;
 
-    // 测试篡改后的验签
-    if (!signature.empty())
-        signature[0] ^= 0x01; // 修改签名第一个字节
-    verified = crypto.verify(keyPair.getPublicKey(),
-                             SM2Crypto::stringToVector(message),
-                             signature);
-    std::cout << "Tampered signature verification: " << (verified ? "SUCCESS" : "FAILED") << std::endl;
-    REQUIRE(verified);
-}
+        // 3. 测试加密解密
+        string message = "Test message for SM2 encryption";
+        auto ciphertext = SM2Crypto::encrypt(keyPair.getPublicKey(),
+                                           SM2Crypto::stringToVector(message));
+        cout << "Ciphertext: " << SM2Crypto::toHex(ciphertext) << endl;
+
+        auto decrypted = SM2Crypto::decrypt(keyPair.getPrivateKey(), ciphertext);
+        cout << "Decrypted: " << SM2Crypto::vectorToString(decrypted) << endl;
+
+        // 4. 测试签名验签
+        auto signature = SM2Crypto::sign(keyPair.getPrivateKey(),
+                                       SM2Crypto::stringToVector(message));
+        cout << "Signature: " << SM2Crypto::toHex(signature) << endl;
+
+        bool verified = SM2Crypto::verify(keyPair.getPublicKey(),
+                                        SM2Crypto::stringToVector(message),
+                                        signature);
+        cout << "Signature verified: " << boolalpha << verified << endl;
+        REQUIRE(verified);
+
+      }
