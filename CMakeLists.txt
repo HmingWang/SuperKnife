@@ -8,6 +8,7 @@ option(WITH_TESTS "编译单元测试案例" ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(msvc)
+include(ansicolor)
 
 # 添加子目录
 add_subdirectory(addon)
