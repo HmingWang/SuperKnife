@@ -2,6 +2,8 @@
 #include "base64.h"
 #include <string>
 #include <iostream>
+#include "sm4.h"
+#include <vector>
 
 TEST_CASE("Catch2 Avaliable test")
 {
@@ -12,9 +14,42 @@ TEST_CASE("Catch2 Avaliable test")
 TEST_CASE("Base64 Encode/Decode")
 {
     std::string original = "我是中国人名的儿子我深情的爱着我的祖国和人民😘";
-    std::string encoded = base64_encode(original,true);
-    std::cout<<"Encoded: " << encoded << std::endl;
+    std::string encoded = base64_encode(original, true);
+    std::cout << "Encoded: " << encoded << std::endl;
     std::string decoded = base64_decode(encoded);
 
     REQUIRE(original == decoded);
+}
+
+TEST_CASE("SM4 ")
+{
+    std::vector<unsigned char> key = {
+        0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+        0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10};
+
+    std::vector<unsigned char> iv = {
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
+
+    std::string original = "test case";
+
+    std::vector<unsigned char> keybin(key.begin(), key.end());
+    std::vector<unsigned char> plaintext(original.begin(), original.end());
+    std::vector<unsigned char> ciphertext = sm4_encrypt(plaintext, key, iv);
+    std::cout << "Plaintext: " << original << std::endl;
+    std::cout << "Ciphertext (hex): ";
+
+    for (auto c : ciphertext)
+    {
+        printf("%02x", c);
+    }
+    std::cout << std::endl;
+
+    // 解密
+    std::vector<unsigned char> decrypted = sm4_decrypt(ciphertext, key, iv);
+    std::string decrypted_str(decrypted.begin(), decrypted.end());
+
+    std::cout << "Decrypted: " << decrypted_str << std::endl;
+
+    REQUIRE(original == decrypted_str);
 }
