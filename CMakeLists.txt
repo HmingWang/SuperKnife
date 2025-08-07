@@ -41,7 +41,6 @@ endif()
 # 添加子目录
 add_subdirectory(addon)
 add_subdirectory(external/sqlite3)
-add_subdirectory(addon/crypto)
 
 
 
@@ -49,5 +48,8 @@ add_subdirectory(addon/crypto)
 if(WITH_TESTS)
   include(CTest)
   include(catch2)
-  add_subdirectory(addon/tests)
+  add_subdirectory(tests)
 endif()
+
+
+
