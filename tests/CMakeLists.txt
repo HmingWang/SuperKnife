@@ -1,6 +1,5 @@
 message(STATUS "单元测试组件")
 
-include(msvc)
 
 include(Catch)
 aux_source_directory(. test_src)

@@ -1,7 +1,6 @@
-#include "addon.h"
-
 #include "api.h"
 #include <iostream>
+#include <napi.h>
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
@@ -14,3 +13,6 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
     std::cout << "Addon initialized." << std::endl;
     return exports;
 }
+
+
+NODE_API_MODULE(api, Init)
