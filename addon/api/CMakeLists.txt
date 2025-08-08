@@ -32,7 +32,7 @@ endif()
 
 aux_source_directory(. API_SRC)
 add_library(api SHARED ${API_SRC} ${CMAKE_JS_SRC})
-target_link_libraries(api PUBLIC ${CMAKE_JS_LIB} dbutils crypto msvc_inf)
+target_link_libraries(api PUBLIC ${CMAKE_JS_LIB} xcore)
 target_include_directories(api PUBLIC 
     ${CMAKE_JS_INC}   
     ${NODE_INCLUDE_DIR}

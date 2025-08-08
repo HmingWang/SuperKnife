@@ -1,65 +1,68 @@
 #include <catch2/catch_all.hpp>
 #include "sm2.h"
 #include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <openssl/applink.c>
 
 using namespace std;
 
-TEST_CASE("test sm2"){
+TEST_CASE("sm2 keypair")
+{
 
+    std::filesystem::path keyPath = "key.pem";
+    std::filesystem::path pubPath = "pub.pem";
 
+    std::filesystem::remove(keyPath);
+    std::filesystem::remove(pubPath);
 
+    SM2KeyPair key;
+    key.generateKeyPair();
+    key.savePrivateKey("key.pem");
+    key.savePublicKey("pub.pem");
 
-        // 1. 生成密钥对
-        SM2KeyPair keyPair;
-        if (!keyPair.generateKeyPair()) {
-            cerr << "Failed to generate SM2 key pair" << endl;
-            return ;
-        }
+    ifstream file("key.pem");
+    std::stringstream buffer;
+    buffer << file.rdbuf(); // 读取整个文件到缓冲区
+    std::string contents = buffer.str();
+    std::cout << contents << std::endl;
+    file.close();
+    REQUIRE(contents.length() > 0);
 
-        // 保存密钥
-        if (!keyPair.savePrivateKey("sm2_private.pem", "mypassword")) {
-            cerr << "Failed to save private key" << endl;
-            return ;
-        }
+    ifstream file1("pub.pem");
+    std::stringstream buffer1;
+    buffer1 << file1.rdbuf(); // 读取整个文件到缓冲区
+    std::string contents1 = buffer1.str();
+    std::cout << contents1 << std::endl;
+    file1.close();
+    REQUIRE(contents1.length() > 0);
 
-        if (!keyPair.savePublicKey("sm2_public.pem")) {
-            cerr << "Failed to save public key" << endl;
-            return ;
-        }
+    REQUIRE(key.loadPrivateKey("key.pem"));
+    REQUIRE(key.loadPublicKey("pub.pem"));
+}
 
-        // 2. 创建自签名证书
-        SM2Certificate cert;
-        string subject = "/C=CN/O=My Organization/CN=SM2 Test Certificate";
-        if (!cert.createSelfSigned(keyPair, subject, 365)) {
-            cerr << "Failed to create self-signed certificate" << endl;
-            return ;
-        }
+TEST_CASE("sm2 cert")
+{
 
-        if (!cert.saveCertificate("sm2_cert.pem")) {
-            cerr << "Failed to save certificate" << endl;
-            return ;
-        }
+    std::filesystem::path filePath = "cert.pem";
+    std::filesystem::remove(filePath);
 
-        cout << "SM2 key pair and certificate generated successfully." << endl;
+    SM2KeyPair key;
+    REQUIRE(key.loadPrivateKey("key.pem"));
+    REQUIRE(key.loadPublicKey("pub.pem"));
 
-        // 3. 测试加密解密
-        string message = "Test message for SM2 encryption";
-        auto ciphertext = SM2Crypto::encrypt(keyPair.getPublicKey(),
-                                           SM2Crypto::stringToVector(message));
-        cout << "Ciphertext: " << SM2Crypto::toHex(ciphertext) << endl;
+    SM2Certificate cert;
+    REQUIRE(cert.createSelfSigned(key, "CN=Sample Cert, OU=R&D, O=Company Ltd., L=Dublin 4, S=Dublin, C=IE"));
+    REQUIRE(cert.saveCertificate("cert.pem"));
 
-        auto decrypted = SM2Crypto::decrypt(keyPair.getPrivateKey(), ciphertext);
-        cout << "Decrypted: " << SM2Crypto::vectorToString(decrypted) << endl;
+    ifstream file("cert.pem");
+    std::stringstream buffer;
+    buffer << file.rdbuf(); // 读取整个文件到缓冲区
+    std::string contents = buffer.str();
+    std::cout << contents << std::endl;
+    file.close();
+    REQUIRE(contents.length() > 0);
+    REQUIRE(cert.loadCertificate("cert.pem"));
 
-        // 4. 测试签名验签
-        auto signature = SM2Crypto::sign(keyPair.getPrivateKey(),
-                                       SM2Crypto::stringToVector(message));
-        cout << "Signature: " << SM2Crypto::toHex(signature) << endl;
-
-        bool verified = SM2Crypto::verify(keyPair.getPublicKey(),
-                                        SM2Crypto::stringToVector(message),
-                                        signature);
-        cout << "Signature verified: " << boolalpha << verified << endl;
-        REQUIRE(verified);
-
-      }
+    cert.printCertificate();
+}

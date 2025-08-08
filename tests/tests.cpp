@@ -5,6 +5,8 @@
 #include "sm4.h"
 #include <vector>
 
+using namespace std;
+
 TEST_CASE("Catch2 Avaliable test")
 {
     int i = 0;
@@ -13,12 +15,22 @@ TEST_CASE("Catch2 Avaliable test")
 
 TEST_CASE("Base64 Encode/Decode")
 {
-    std::string original = "我是中国人名的儿子我深情的爱着我的祖国和人民😘";
-    std::string encoded = base64_encode(original, true);
+    std::string original = "我是中国人名的儿子我深情的爱着我的祖国和人民";
+    std::cout<<original<<endl;
+    std::string encoded_nl = base64_encode(original, true);
+    std::string encoded = base64_encode(original, false);
+
     std::cout << "Encoded: " << encoded << std::endl;
+    std::cout << "Encoded newline: " << encoded << std::endl;
+
     std::string decoded = base64_decode(encoded);
+    std::string decoded_nl = base64_decode(encoded_nl);
+
+    std::cout << "decode: " << decoded << std::endl;
+    std::cout << "decode newline: " << decoded_nl << std::endl;
 
     REQUIRE(original == decoded);
+    REQUIRE(original == decoded_nl);
 }
 
 TEST_CASE("SM4 ")
