@@ -1,61 +1,27 @@
 #pragma once
 
-#include <openssl/evp.h>
-#include <openssl/x509.h>
+#include "base.h"
 #include <string>
 #include <vector>
 #include <memory>
 #include <map>
 
-class SM2KeyPair
+class SM2KeyPair : public KeyPair
 {
 public:
-    SM2KeyPair();
-    ~SM2KeyPair();
-
-    bool generateKeyPair();
-    bool savePrivateKey(const std::string &filename, const std::string &passphrase = "");
-    bool savePublicKey(const std::string &filename);
-    bool loadPrivateKey(const std::string &filename, const std::string &passphrase = "");
-    bool loadPublicKey(const std::string &filename);
-
-    EVP_PKEY *getPrivateKey() const { return m_privateKey; }
-    EVP_PKEY *getPublicKey() const { return m_publicKey; }
-
-private:
-    EVP_PKEY *m_privateKey;
-    EVP_PKEY *m_publicKey;
+    bool generateKeyPair() override;
 };
 
-class SM2Certificate
+class SM2Certificate : public Cert
 {
 public:
-    SM2Certificate();
-    ~SM2Certificate();
-
     bool createSelfSigned(SM2KeyPair &keyPair,
                           const std::string &subject,
                           int validDays = 365);
-    bool saveCertificate(const std::string &filename);
-    bool loadCertificate(const std::string &filename);
-    void printCertificate();
-
-    X509 *getX509() const { return m_cert; }
-    EVP_PKEY *getPublicKey() const;
-
-private:
-    bool setSubjectFromString(X509 *cert, const std::string &subjectStr);
-    std::vector<std::pair<std::string, std::string>> parseSubjectString(const std::string &subject);
-    void addExtension(X509* cert_,int nid, const char* value);
-
-    void printBasicInfo();
-    void printExtensions();
-    void printFingerPrints();
-
-    X509 *m_cert;
+    SM2Certificate signedCertificate(CertReq &req, SM2KeyPair &caKeyPair, int validDays = 365);
 };
 
-class SM2Crypto
+class SM2Crypto : public Crypto
 {
 public:
     static std::vector<unsigned char> encrypt(EVP_PKEY *publicKey,

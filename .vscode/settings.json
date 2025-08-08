@@ -97,6 +97,7 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "applink.c": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "coroutine": "cpp"
     }
 }
