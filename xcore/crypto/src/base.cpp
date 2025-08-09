@@ -102,13 +102,12 @@ bool Base::setSubjectFromString(X509_NAME *name, const string &subjectStr) {
 
 vector<pair<string, string>> Base::parseSubjectString(const string &subject) {
 
-  static const map<string, string> fieldMap = {
-        {"C", "countryName"},
-        {"ST", "stateOrProvinceName"},
-        {"L", "localityName"},
-        {"O", "organizationName"},
-        {"OU", "organizationalUnitName"},
-        {"CN", "commonName"}};
+  static const map<string, string> fieldMap = {{"C", "countryName"},
+                                               {"ST", "stateOrProvinceName"},
+                                               {"L", "localityName"},
+                                               {"O", "organizationName"},
+                                               {"OU", "organizationalUnitName"},
+                                               {"CN", "commonName"}};
 
   vector<pair<string, string>> result;
 
@@ -117,7 +116,8 @@ vector<pair<string, string>> Base::parseSubjectString(const string &subject) {
 
   for (auto s : rows) {
     auto p = s.split("=");
-    result.push_back({fieldMap.find(p[0].trim().to_string())->first, p[1].to_string()});
+    result.push_back(
+        {fieldMap.find(p[0].trim().to_string())->first, p[1].to_string()});
   }
 
   return result;
