@@ -331,6 +331,7 @@ Cert Cert::signedCertificate(CertReq &req,KeyPair &caKeyPair,const EVP_MD* md, i
     {
         throw CertificateException("Unable to sign certificate");
     }
+    return Cert(cert_.get());
 }
 
 void Cert::printCertificate()
