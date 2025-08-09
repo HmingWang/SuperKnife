@@ -1,5 +1,6 @@
 #include "base.h"
 #include "xstring.h"
+#include <openssl/x509.h>
 
 using namespace std;
 
@@ -80,47 +81,106 @@ void Base::print_openssl_errors() {
   BIO_free(bio);
 }
 
-bool Base::setSubjectFromString(X509_NAME *name, const string &subjectStr) {
-  if (!name)
-    return false;
-
-  auto subjectFields = parseSubjectString(subjectStr);
-  if (subjectFields.empty())
-    return false;
-
-  for (const auto &[field, value] : subjectFields) {
-    if (!X509_NAME_add_entry_by_txt(
-            name, field.c_str(), MBSTRING_ASC,
-            reinterpret_cast<const unsigned char *>(value.c_str()), -1, -1,
-            0)) {
-      return false;
+bool Base::setSubjectFromString(X509 *cert, const string &subjectStr) {
+if (!cert) {
+        std::cerr << "Invalid certificate pointer" << std::endl;
+        return false;
     }
-  }
 
-  return true;
+    X509_NAME* name = X509_get_subject_name(cert);
+    if (!name) {
+        std::cerr << "Failed to get subject name from certificate" << std::endl;
+        return false;
+    }
+
+    auto subjectFields = parseSubjectString(subjectStr);
+    if (subjectFields.empty()) {
+        std::cerr << "No valid fields found in subject" << std::endl;
+        return false;
+    }
+
+    // 必须包含的必填字段
+  static const std::set<std::string> requiredFields = {
+    "countryName", "organizationName", "commonName"
+};
+
+    std::set<std::string> presentFields;
+    for (const auto& [field, value] : subjectFields) {
+        presentFields.insert(field);
+
+        if (!X509_NAME_add_entry_by_txt(name, field.c_str(), MBSTRING_ASC,
+                                      reinterpret_cast<const unsigned char*>(value.c_str()),
+                                      -1, -1, 0)) {
+            std::cerr << "Failed to add field: " << field << "=" << value << std::endl;
+            ERR_print_errors_fp(stderr);
+            return false;
+        }
+    }
+
+    // 检查必填字段
+    for (const auto& reqField : requiredFields) {
+        if (presentFields.find(reqField) == presentFields.end()) {
+            std::cerr << "Missing required field in subject: " << reqField << std::endl;
+            return false;
+        }
+    }
+
+    return true;
 }
 
 vector<pair<string, string>> Base::parseSubjectString(const string &subject) {
 
-  static const map<string, string> fieldMap = {{"C", "countryName"},
-                                               {"ST", "stateOrProvinceName"},
-                                               {"L", "localityName"},
-                                               {"O", "organizationName"},
-                                               {"OU", "organizationalUnitName"},
-                                               {"CN", "commonName"}};
+ std::vector<std::pair<std::string, std::string>> result;
 
-  vector<pair<string, string>> result;
+    if (subject.empty()) {
+        std::cerr << "Empty subject string" << std::endl;
+        return result;
+    }
 
-  String sub(subject);
-  auto rows = sub.split(",");
+    size_t start = (subject[0] == '/') ? 1 : 0;
 
-  for (auto s : rows) {
-    auto p = s.split("=");
-    result.push_back(
-        {fieldMap.find(p[0].trim().to_string())->first, p[1].to_string()});
-  }
+    while (start < subject.size()) {
+        size_t eq_pos = subject.find('=', start);
+        if (eq_pos == std::string::npos || eq_pos == subject.size() - 1) {
+            std::cerr << "Invalid subject format: missing value after '='" << std::endl;
+            break;
+        }
 
-  return result;
+        size_t next_slash = subject.find('/', eq_pos);
+        if (next_slash == std::string::npos) {
+            next_slash = subject.size();
+        }
+
+        std::string field = subject.substr(start, eq_pos - start);
+        std::string value = subject.substr(eq_pos + 1, next_slash - eq_pos - 1);
+
+        // 验证字段和值非空
+        if (field.empty() || value.empty()) {
+            std::cerr << "Empty field or value in subject" << std::endl;
+            start = next_slash + 1;
+            continue;
+        }
+
+        // 转换标准字段名
+        static const std::map<std::string, std::string> fieldMap = {
+            {"C", "countryName"},
+            {"ST", "stateOrProvinceName"},
+            {"L", "localityName"},
+            {"O", "organizationName"},
+            {"OU", "organizationalUnitName"},
+            {"CN", "commonName"}
+        };
+
+        auto it = fieldMap.find(field);
+        if (it != fieldMap.end()) {
+            field = it->second;
+        }
+
+        result.emplace_back(field, value);
+        start = next_slash + 1;
+    }
+
+    return result;
 }
 
 bool Cert::createSelfSigned(KeyPair &keyPair, const EVP_MD *md,
@@ -158,13 +218,12 @@ bool Cert::createSelfSigned(KeyPair &keyPair, const EVP_MD *md,
     return false;
   }
 
-  X509_NAME_ptr name(X509_get_subject_name(cert.get()));
-  if (!setSubjectFromString(name.get(), subject)) {
+  if (!setSubjectFromString(cert.get(), subject)) {
     cerr << "Failed to set subject: " << subject << endl;
     return false;
   }
 
-  if (!X509_set_issuer_name(cert.get(), name.get())) {
+  if (!X509_set_issuer_name(cert.get(), X509_get_subject_name(cert.get()))) {
     cerr << "Failed to set issuer name" << endl;
     return false;
   }
@@ -173,6 +232,11 @@ bool Cert::createSelfSigned(KeyPair &keyPair, const EVP_MD *md,
     std::cerr << "digest not available" << std::endl;
     return false;
   }
+
+  // 添加扩展
+  addExtension(cert.get(), NID_basic_constraints, "critical,CA:TRUE");
+  addExtension(cert.get(), NID_key_usage, "critical,keyCertSign,cRLSign");
+  addExtension(cert.get(), NID_subject_key_identifier, "hash");
 
   if (!X509_sign(cert.get(), keyPair.getPrivateKey(), md)) {
     print_openssl_errors();
@@ -183,11 +247,6 @@ bool Cert::createSelfSigned(KeyPair &keyPair, const EVP_MD *md,
   if (m_cert)
     X509_free(m_cert);
   m_cert = cert.release();
-
-  // 添加扩展
-  addExtension(NID_basic_constraints, "critical,CA:TRUE");
-  addExtension(NID_key_usage, "critical,keyCertSign,cRLSign");
-  addExtension(NID_subject_key_identifier, "hash");
 
   return true;
 }
@@ -271,11 +330,12 @@ Cert Cert::signedCertificate(CertReq &req, KeyPair &caKeyPair, const EVP_MD *md,
   EVP_PKEY_free(req_pubkey);
 
   // 添加扩展
-  addExtension(NID_basic_constraints, "critical,CA:FALSE");
-  addExtension(NID_key_usage, "critical,digitalSignature,keyEncipherment");
-  addExtension(NID_ext_key_usage, "serverAuth,clientAuth");
-  addExtension(NID_subject_key_identifier, "hash");
-  addExtension(NID_authority_key_identifier, "keyid:always");
+  addExtension(cert_.get(), NID_basic_constraints, "critical,CA:FALSE");
+  addExtension(cert_.get(), NID_key_usage,
+               "critical,digitalSignature,keyEncipherment");
+  addExtension(cert_.get(), NID_ext_key_usage, "serverAuth,clientAuth");
+  addExtension(cert_.get(), NID_subject_key_identifier, "hash");
+  addExtension(cert_.get(), NID_authority_key_identifier, "keyid:always");
 
   // 签名
   if (X509_sign(cert_.get(), caKeyPair.getPrivateKey(), md) <= 0) {
@@ -301,17 +361,20 @@ EVP_PKEY *Cert::getPublicKey() const {
   return X509_get_pubkey(m_cert);
 }
 
-void Cert::addExtension(int nid, const char *value) {
+void Cert::addExtension(X509 *cert, int nid, const char *value) {
+  if (!cert)
+    return;
+
   X509V3_CTX ctx;
   X509V3_set_ctx_nodb(&ctx);
-  X509V3_set_ctx(&ctx, m_cert, m_cert, nullptr, nullptr, 0);
+  X509V3_set_ctx(&ctx, cert, cert, nullptr, nullptr, 0);
 
   X509_EXTENSION *ex = X509V3_EXT_conf_nid(nullptr, &ctx, nid, value);
   if (!ex) {
     cerr << "Unable to create extension" << endl;
   }
 
-  if (X509_add_ext(m_cert, ex, -1) != 1) {
+  if (X509_add_ext(cert, ex, -1) != 1) {
     X509_EXTENSION_free(ex);
     cerr << "Unable to add extension to certificate" << endl;
   }
@@ -470,7 +533,7 @@ bool CertReq::createCertificateRequest(KeyPair &keyPair,
 
   // 设置主题名称
   X509_NAME *name = X509_REQ_get_subject_name(req.get());
-  Base::setSubjectFromString(name, subject);
+  // Base::setSubjectFromString(name, subject);
 
   // 签名请求
   if (X509_REQ_sign(req.get(), keyPair.getPublicKey(), EVP_sm3()) != 0) {

@@ -51,7 +51,7 @@ TEST_CASE("sm2 cert") {
   SM2Certificate cert;
   REQUIRE(cert.createSelfSigned(
       cakey,
-      "C=IE,O=testunit,CN=test ca cert"));
+      "CN=Sample Cert, OU=R&D, O=Company Ltd., L=Dublin 4, S=Dublin, C=IE"));
   REQUIRE(cert.saveCertificate("ca.pem"));
 
   ifstream file("ca.pem");

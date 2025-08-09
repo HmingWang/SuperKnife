@@ -42,7 +42,7 @@ protected:
 
   void print_openssl_errors();
 
-  bool setSubjectFromString(X509_NAME *name, const std::string &subjectStr);
+  bool setSubjectFromString(X509 *cert, const std::string &subjectStr);
   std::vector<std::pair<std::string, std::string>>
   parseSubjectString(const std::string &subject);
 };
@@ -116,7 +116,7 @@ private:
   void printBasicInfo();
   void printExtensions();
   void printFingerPrints();
-  void addExtension(int nid, const char *value);
+  void addExtension(X509* cert,int nid, const char *value);
 };
 
 class Crypto : public Base {};
