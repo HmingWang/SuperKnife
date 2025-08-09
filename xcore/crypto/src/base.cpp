@@ -1,5 +1,6 @@
 #include "base.h"
 #include "xstring.h"
+#include <openssl/evp.h>
 #include <openssl/x509.h>
 
 using namespace std;
@@ -81,106 +82,47 @@ void Base::print_openssl_errors() {
   BIO_free(bio);
 }
 
-bool Base::setSubjectFromString(X509 *cert, const string &subjectStr) {
-if (!cert) {
-        std::cerr << "Invalid certificate pointer" << std::endl;
-        return false;
+bool Base::setSubjectFromString(X509_NAME *name, const string &subjectStr) {
+  if (!name)
+    return false;
+
+  auto subjectFields = parseSubjectString(subjectStr);
+  if (subjectFields.empty())
+    return false;
+
+  for (const auto &[field, value] : subjectFields) {
+    if (!X509_NAME_add_entry_by_txt(
+            name, field.c_str(), MBSTRING_ASC,
+            reinterpret_cast<const unsigned char *>(value.c_str()), -1, -1,
+            0)) {
+      return false;
     }
+  }
 
-    X509_NAME* name = X509_get_subject_name(cert);
-    if (!name) {
-        std::cerr << "Failed to get subject name from certificate" << std::endl;
-        return false;
-    }
-
-    auto subjectFields = parseSubjectString(subjectStr);
-    if (subjectFields.empty()) {
-        std::cerr << "No valid fields found in subject" << std::endl;
-        return false;
-    }
-
-    // 必须包含的必填字段
-  static const std::set<std::string> requiredFields = {
-    "countryName", "organizationName", "commonName"
-};
-
-    std::set<std::string> presentFields;
-    for (const auto& [field, value] : subjectFields) {
-        presentFields.insert(field);
-
-        if (!X509_NAME_add_entry_by_txt(name, field.c_str(), MBSTRING_ASC,
-                                      reinterpret_cast<const unsigned char*>(value.c_str()),
-                                      -1, -1, 0)) {
-            std::cerr << "Failed to add field: " << field << "=" << value << std::endl;
-            ERR_print_errors_fp(stderr);
-            return false;
-        }
-    }
-
-    // 检查必填字段
-    for (const auto& reqField : requiredFields) {
-        if (presentFields.find(reqField) == presentFields.end()) {
-            std::cerr << "Missing required field in subject: " << reqField << std::endl;
-            return false;
-        }
-    }
-
-    return true;
+  return true;
 }
 
 vector<pair<string, string>> Base::parseSubjectString(const string &subject) {
 
- std::vector<std::pair<std::string, std::string>> result;
+  static const map<string, string> fieldMap = {{"C", "countryName"},
+                                               {"ST", "stateOrProvinceName"},
+                                               {"L", "localityName"},
+                                               {"O", "organizationName"},
+                                               {"OU", "organizationalUnitName"},
+                                               {"CN", "commonName"}};
 
-    if (subject.empty()) {
-        std::cerr << "Empty subject string" << std::endl;
-        return result;
-    }
+  vector<pair<string, string>> result;
 
-    size_t start = (subject[0] == '/') ? 1 : 0;
+  String sub(subject);
+  auto rows = sub.split(",");
 
-    while (start < subject.size()) {
-        size_t eq_pos = subject.find('=', start);
-        if (eq_pos == std::string::npos || eq_pos == subject.size() - 1) {
-            std::cerr << "Invalid subject format: missing value after '='" << std::endl;
-            break;
-        }
+  for (auto s : rows) {
+    auto p = s.split("=");
+    result.push_back(
+        {fieldMap.find(p[0].trim().to_string())->second, p[1].to_string()});
+  }
 
-        size_t next_slash = subject.find('/', eq_pos);
-        if (next_slash == std::string::npos) {
-            next_slash = subject.size();
-        }
-
-        std::string field = subject.substr(start, eq_pos - start);
-        std::string value = subject.substr(eq_pos + 1, next_slash - eq_pos - 1);
-
-        // 验证字段和值非空
-        if (field.empty() || value.empty()) {
-            std::cerr << "Empty field or value in subject" << std::endl;
-            start = next_slash + 1;
-            continue;
-        }
-
-        // 转换标准字段名
-        static const std::map<std::string, std::string> fieldMap = {
-            {"C", "countryName"},
-            {"ST", "stateOrProvinceName"},
-            {"L", "localityName"},
-            {"O", "organizationName"},
-            {"OU", "organizationalUnitName"},
-            {"CN", "commonName"}
-        };
-
-        auto it = fieldMap.find(field);
-        if (it != fieldMap.end()) {
-            field = it->second;
-        }
-
-        result.emplace_back(field, value);
-        start = next_slash + 1;
-    }
-
-    return result;
+  return result;
 }
 
 bool Cert::createSelfSigned(KeyPair &keyPair, const EVP_MD *md,
@@ -218,15 +160,26 @@ bool Cert::createSelfSigned(KeyPair &keyPair, const EVP_MD *md,
     return false;
   }
 
-  if (!setSubjectFromString(cert.get(), subject)) {
+  X509_NAME *name = X509_get_subject_name(cert.get());
+
+  if (!setSubjectFromString(name, subject)) {
     cerr << "Failed to set subject: " << subject << endl;
     return false;
   }
 
-  if (!X509_set_issuer_name(cert.get(), X509_get_subject_name(cert.get()))) {
+  if (!X509_set_issuer_name(cert.get(), name)) {
     cerr << "Failed to set issuer name" << endl;
     return false;
   }
+
+  // work !!!!
+  // // Set subject and issuer (self-signed, so same)
+  // X509_NAME *name = X509_get_subject_name(cert.get());
+  // X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC, (unsigned char *)"CN",
+  // -1, -1, 0); X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC, (unsigned
+  // char *)"MyOrg", -1, -1, 0); X509_NAME_add_entry_by_txt(name, "CN",
+  // MBSTRING_ASC, (unsigned char *)"SM2 Cert", -1, -1, 0);
+  // X509_set_issuer_name(cert.get(), name);
 
   if (!md) {
     std::cerr << "digest not available" << std::endl;
@@ -533,10 +486,17 @@ bool CertReq::createCertificateRequest(KeyPair &keyPair,
 
   // 设置主题名称
   X509_NAME *name = X509_REQ_get_subject_name(req.get());
-  // Base::setSubjectFromString(name, subject);
+  setSubjectFromString(name, subject);
 
   // 签名请求
-  if (X509_REQ_sign(req.get(), keyPair.getPublicKey(), EVP_sm3()) != 0) {
+  if (X509_REQ_sign(req.get(), keyPair.getPrivateKey(), EVP_sm3()) <= 0) {
+    fprintf(stderr, "X509_REQ_sign failed\n");
+        unsigned long err_code;
+        while ((err_code = ERR_get_error()) != 0) {
+            char buf[256];
+            ERR_error_string_n(err_code, buf, sizeof(buf));
+            fprintf(stderr, "OpenSSL error: %s\n", buf);
+        }
     return false;
   }
   return true;

@@ -42,7 +42,7 @@ protected:
 
   void print_openssl_errors();
 
-  bool setSubjectFromString(X509 *cert, const std::string &subjectStr);
+  bool setSubjectFromString(X509_NAME *name, const std::string &subjectStr);
   std::vector<std::pair<std::string, std::string>>
   parseSubjectString(const std::string &subject);
 };
