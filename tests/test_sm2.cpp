@@ -42,27 +42,26 @@ TEST_CASE("sm2 keypair") {
 
 TEST_CASE("sm2 cert") {
 
-  std::filesystem::path filePath = "cert.pem";
+  std::filesystem::path filePath = "ca.pem";
   std::filesystem::remove(filePath);
 
-  SM2KeyPair key;
-  REQUIRE(key.loadPrivateKey("key.pem"));
-  REQUIRE(key.loadPublicKey("pub.pem"));
+  SM2KeyPair cakey;
+  cakey.generateKeyPair();
 
   SM2Certificate cert;
   REQUIRE(cert.createSelfSigned(
-      key,
-      "CN=Sample Cert, OU=R&D, O=Company Ltd., L=Dublin 4, S=Dublin, C=IE"));
-  REQUIRE(cert.saveCertificate("cert.pem"));
+      cakey,
+      "C=IE,O=testunit,CN=test ca cert"));
+  REQUIRE(cert.saveCertificate("ca.pem"));
 
-  ifstream file("cert.pem");
+  ifstream file("ca.pem");
   std::stringstream buffer;
   buffer << file.rdbuf(); // 读取整个文件到缓冲区
   std::string contents = buffer.str();
   std::cout << contents << std::endl;
   file.close();
   REQUIRE(contents.length() > 0);
-  REQUIRE(cert.loadCertificate("cert.pem"));
+  REQUIRE(cert.loadCertificate("ca.pem"));
 
   cert.printCertificate();
 
@@ -70,9 +69,9 @@ TEST_CASE("sm2 cert") {
   key2.generateKeyPair();
   CertReq req;
   req.createCertificateRequest(
-      key2, "CN=test Cert, OU=R&D, O=Company Ltd., L=Dublin 4, S=Dublin, C=CN");
+      key2, "CN=test Cert, OU=R&D, O=Company Ltd., L=Dublin 4, ST=Dublin, C=CN");
   req.saveCertificateRequest("csr.pem");
-  ifstream csr("cert.pem");
+  ifstream csr("csr.pem");
   std::stringstream buffer2;
   buffer2 << csr.rdbuf(); // 读取整个文件到缓冲区
   std::string contents2 = buffer2.str();
@@ -80,6 +79,7 @@ TEST_CASE("sm2 cert") {
   csr.close();
   REQUIRE(contents2.length() > 0);
 
-  SM2Certificate cert2 = cert.signedCertificate(req, key);
+  SM2Certificate cert2 = cert.signedCertificate(req, cakey);
   cert2.printCertificate();
+  cert2.saveCertificate("cert.pem");
 }

@@ -8,4 +8,4 @@ target_include_directories(crypto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENSSL_I
 ${CMAKE_CURRENT_SOURCE_DIR}/../common
 )
 target_link_directories(crypto PUBLIC ${OPENSSL_LIB_DIR})
-target_link_libraries(crypto PUBLIC OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(crypto PUBLIC OpenSSL::SSL OpenSSL::Crypto utils)
