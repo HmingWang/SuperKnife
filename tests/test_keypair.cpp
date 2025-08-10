@@ -1,16 +1,19 @@
 #include "exceptions.h"
-#include "keypair.h"
+#include "pkey.h"
 #include <catch2/catch_all.hpp>
+#include <cstdlib>
 
 using namespace x::crypto;
 TEST_CASE("test keypair") {
 
-    KeyPair key = KeyPair::Generator::sm2();
+    system("rm *.pem");
+
+    PKey key = PKey::Generator::sm2();
     key.save_public("pub.pem");
     key.save_private("priv.pem", "123456");
 
-    KeyPair key_priv=KeyPair::Generator::load_private_from_file("priv.pem","123456");
-    KeyPair key_pub=KeyPair::Generator::load_public_from_file("pub.pem");
+    PKey key_priv=PKey::Generator::load_private("priv.pem","123456");
+    PKey key_pub=PKey::Generator::load_public("pub.pem");
 
     // REQUIRE_THROWS(key.loadPrivateKey("priv.pkey", "123"));
     // REQUIRE_NOTHROW(key.loadPrivateKey("priv.pkey", "123456"));

@@ -7,9 +7,6 @@
 #include <openssl/rand.h>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
-
-#include "exceptions.h"
-#include "xstring.h"
 #include <memory>
 
 #define OPENSSL_UNIQ_PTR_WHIT_DELETER(name)                                    \
@@ -27,32 +24,12 @@ OPENSSL_UNIQ_PTR_WHIT_DELETER(X509_REQ);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(EC_GROUP);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(BIO);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(EVP_CIPHER);
+OPENSSL_UNIQ_PTR_WHIT_DELETER(X509_EXTENSION);
 
-class OpenSSLException : public Exception {
-public:
-  OpenSSLException(std::string_view msg) : Exception(msg) {}
-  virtual String what() noexcept {
-    printErrorStack();
-    return std::format("[OpenSSL异常]:{}", msg);
-  }
-  void printErrorStack() {
-    unsigned long err_code;
-    const char *file, *data, *func;
-    int line, flags;
-
-    while ((err_code = ERR_get_error_all(&file, &line, &func, &data, &flags))) {
-      printf("Error: %s\n", ERR_error_string(err_code, NULL));
-      printf("  Location: %s:%d:%s\n", file, line, func);
-      if (data && (flags & ERR_TXT_STRING)) {
-        printf("  Additional data: %s\n", data);
-      }
-    }
-  }
-};
 
 #define OSSL_ASSERT_FUNC(func)                                                 \
   do {                                                                         \
-    if (!(func == 1)) {                                                        \
+    if (func <=0) {                                                        \
       throw OpenSSLException(                                                  \
           std::format("OpenSSL Assert Function Failed:{}:{}:{}", __FILE__,     \
                       __LINE__, #func));                                       \

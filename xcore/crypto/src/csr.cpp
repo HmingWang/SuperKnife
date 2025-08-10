@@ -1,10 +1,10 @@
 #include "csr.h"
-#include "keypair.h"
+#include "pkey.h"
 #include "openssl.h"
 
 namespace x::crypto {
 
-CSR CSR::Generator::create(KeyPair &key, std::string_view subject) {
+CSR CSR::Generator::create(PKey &key, std::string_view subject) {
 
   X509_REQ_ptr req(X509_REQ_new());
   OSSL_ASSERT_PTR(req);
@@ -22,7 +22,8 @@ CSR CSR::Generator::create(KeyPair &key, std::string_view subject) {
   }
 
   // 签名请求
-  OSSL_ASSERT_FUNC(X509_REQ_sign(req.get(), key.get_raw(), EVP_sm3()));
+  int res=X509_REQ_sign(req.get(), key.get_raw(), EVP_sm3());
+  OSSL_ASSERT_FUNC(res);
 
   return std::move(CSR(std::move(req)));
 }
