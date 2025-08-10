@@ -52,11 +52,9 @@ bool SM2Certificate::createSelfSigned(SM2KeyPair &keyPair,
   return Cert::createSelfSigned(keyPair, EVP_sm3(), subject, validDays);
 }
 
-SM2Certificate SM2Certificate::signedCertificate(CertReq &req,
-                                                 SM2KeyPair &caKeyPair,
-                                                 int validDays) {
-  return SM2Certificate(
-      Cert::signedCertificate(req, caKeyPair, EVP_sm3(), validDays));
+Cert SM2Certificate::signedCertificate(CertReq &req, SM2KeyPair &caKeyPair,
+                                       int validDays) {
+  return Cert::signedCertificate(req, caKeyPair, EVP_sm3(), validDays);
 }
 
 // ==================== SM2Crypto Implementation ====================

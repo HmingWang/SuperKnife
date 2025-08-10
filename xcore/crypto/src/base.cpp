@@ -212,7 +212,11 @@ bool Cert::saveCertificate(const string &filename) {
   if (!bio)
     return false;
 
-  return PEM_write_bio_X509(bio.get(), m_cert) == 1;
+  if (!PEM_write_bio_X509(bio.get(), m_cert)) {
+    print_openssl_errors();
+    return false;
+  }
+  return true;
 }
 
 bool Cert::loadCertificate(const string &filename) {
@@ -243,8 +247,7 @@ Cert Cert::signedCertificate(CertReq &req, KeyPair &caKeyPair, const EVP_MD *md,
   }
 
   // 设置序列号 (使用时间戳)
-  if (ASN1_INTEGER_set(X509_get_serialNumber(cert_.get()), time(nullptr)) !=
-      1) {
+  if (ASN1_INTEGER_set(X509_get_serialNumber(cert_.get()), 1) != 1) {
     throw CertificateException("Unable to set serial number");
   }
 
@@ -294,7 +297,11 @@ Cert Cert::signedCertificate(CertReq &req, KeyPair &caKeyPair, const EVP_MD *md,
   if (X509_sign(cert_.get(), caKeyPair.getPrivateKey(), md) <= 0) {
     throw CertificateException("Unable to sign certificate");
   }
-  return Cert(cert_.get());
+
+  Cert newcert(cert_.get());
+  newcert.printCertificate();
+  newcert.saveCertificate("123.pem");
+  return std::move(newcert);
 }
 
 void Cert::printCertificate() {
@@ -474,10 +481,10 @@ bool CertReq::createCertificateRequest(KeyPair &keyPair,
 
   unique_ptr<X509_REQ, X509_REQ_Deleter> req(X509_REQ_new());
 
-  // 设置版本
-  if (X509_REQ_set_version(req.get(), 0) != 1) {
-    return false;
-  }
+  //设置版本
+  // if (X509_REQ_set_version(req.get(), 0) != 1) {
+  //   return false;
+  // }
 
   // 设置公钥
   if (X509_REQ_set_pubkey(req.get(), keyPair.getPublicKey()) != 1) {
@@ -486,19 +493,20 @@ bool CertReq::createCertificateRequest(KeyPair &keyPair,
 
   // 设置主题名称
   X509_NAME *name = X509_REQ_get_subject_name(req.get());
-  setSubjectFromString(name, subject);
+  if (!setSubjectFromString(name, subject)) {
+    return false;
+  }
 
   // 签名请求
   if (X509_REQ_sign(req.get(), keyPair.getPrivateKey(), EVP_sm3()) <= 0) {
-    fprintf(stderr, "X509_REQ_sign failed\n");
-        unsigned long err_code;
-        while ((err_code = ERR_get_error()) != 0) {
-            char buf[256];
-            ERR_error_string_n(err_code, buf, sizeof(buf));
-            fprintf(stderr, "OpenSSL error: %s\n", buf);
-        }
+    print_openssl_errors();
     return false;
   }
+
+  if (m_req)
+    X509_REQ_free(m_req);
+  m_req = req.release();
+
   return true;
 }
 

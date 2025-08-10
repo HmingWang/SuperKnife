@@ -13,32 +13,7 @@ public:
 class Base {
 protected:
   // 自定义删除器用于智能指针管理OpenSSL资源
-  struct EVP_PKEY_Deleter {
-    void operator()(EVP_PKEY *p) { EVP_PKEY_free(p); }
-  };
-  struct X509_Deleter {
-    void operator()(X509 *p) { X509_free(p); }
-  };
-  struct BIO_Deleter {
-    void operator()(BIO *p) { BIO_free(p); }
-  };
-  struct X509_REQ_Deleter {
-    void operator()(X509_REQ *p) { X509_REQ_free(p); }
-  };
-  struct X509_NAME_Deleter {
-    void operator()(X509_NAME *p) { X509_NAME_free(p); }
-  };
-  struct EC_GROUP_Deleter {
-    void operator()(EC_GROUP *p) { EC_GROUP_free(p); }
-  };
 
-  using EVP_PKEY_ptr = std::unique_ptr<EVP_PKEY, EVP_PKEY_Deleter>;
-  using X509_ptr = std::unique_ptr<X509, X509_Deleter>;
-  using BIO_ptr = std::unique_ptr<BIO, BIO_Deleter>;
-  using X509_REQ_ptr = std::unique_ptr<X509_REQ, X509_REQ_Deleter>;
-  using X509_NAME_ptr = std::unique_ptr<X509_NAME, X509_NAME_Deleter>;
-
-  using EC_GROUP_ptr = std::unique_ptr<EC_GROUP, EC_GROUP_Deleter>;
 
   void print_openssl_errors();
 

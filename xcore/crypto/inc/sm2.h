@@ -18,7 +18,7 @@ public:
     bool createSelfSigned(SM2KeyPair &keyPair,
                           const std::string &subject,
                           int validDays = 365);
-    SM2Certificate signedCertificate(CertReq &req, SM2KeyPair &caKeyPair, int validDays = 365);
+    Cert signedCertificate(CertReq &req, SM2KeyPair &caKeyPair, int validDays = 365);
 };
 
 class SM2Crypto : public Crypto

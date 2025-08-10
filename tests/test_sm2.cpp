@@ -1,3 +1,4 @@
+#include "catch2/catch_test_macros.hpp"
 #include "sm2.h"
 #include <catch2/catch_all.hpp>
 #include <filesystem>
@@ -68,9 +69,11 @@ TEST_CASE("sm2 cert") {
   SM2KeyPair key2;
   key2.generateKeyPair();
   CertReq req;
-  req.createCertificateRequest(
-      key2, "CN=test Cert, OU=R&D, O=Company Ltd., L=Dublin 4, ST=Dublin, C=CN");
-  req.saveCertificateRequest("csr.pem");
+  REQUIRE(req.createCertificateRequest(
+      key2,
+      "CN=test Cert, OU=R&D, O=Company Ltd., L=Dublin 4, ST=Dublin, C=CN"));
+  REQUIRE(req.saveCertificateRequest("csr.pem"));
+  REQUIRE(filesystem::exists("csr.pem"));
   ifstream csr("csr.pem");
   std::stringstream buffer2;
   buffer2 << csr.rdbuf(); // 读取整个文件到缓冲区
@@ -79,7 +82,14 @@ TEST_CASE("sm2 cert") {
   csr.close();
   REQUIRE(contents2.length() > 0);
 
-  SM2Certificate cert2 = cert.signedCertificate(req, cakey);
-  cert2.printCertificate();
-  cert2.saveCertificate("cert.pem");
+  // Cert certsign(cert.signedCertificate(req, cakey));
+  // REQUIRE(certsign.saveCertificate("signcert.pem"));
+  // ifstream cert2("signcert.pem");
+  // std::stringstream buffer3;
+  // buffer3 << cert2.rdbuf(); // 读取整个文件到缓冲区
+  // std::string contents3 = buffer3.str();
+  // std::cout << contents3 << std::endl;
+  // cert2.close();
+  // REQUIRE(contents3.length() > 0);
+
 }

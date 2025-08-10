@@ -53,6 +53,6 @@ public:
     StatusException(std::string_view msg) : Exception(msg) {}
     virtual String what() noexcept
     {
-        return std::format("[计费状态异常]:{}", msg);
+        return std::format("[状态异常]:{}", msg);
     }
 };

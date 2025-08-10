@@ -37,3 +37,8 @@ my-angular-app/
 ## 问题汇总
 
 * 原生c++ addon无法加载，报not connected错误。使用node-gyp没问题，后发现cmake-js编译需要加上${CMAKE_JS_SRC}，inc和lib变量也需要加上。
+
+
+## OPENSSL问题汇总
+
+* 创建evp_pkey_ctx时 必须直接指定为sm2
