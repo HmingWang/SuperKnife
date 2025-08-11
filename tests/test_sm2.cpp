@@ -25,9 +25,10 @@ TEST_CASE("sm2 sign/verify"){
   PKey sm2pkey=PKey::Generator::sm2();
 
   std::string plaintxt="我是中国人";
-  Bytes txt= sm2pkey.sign(String(plaintxt).to_bytes());
+  Bytes plain=String(plaintxt).to_bytes();
+  Bytes txt= sm2pkey.sign(plain);
   std::cout<<"明文："<<plaintxt<<std::endl;
-  std::cout<<"Sign："<<txt.to_hex_string()<<std::endl;
-  REQUIRE(sm2pkey.verify(String(plaintxt).to_bytes(),txt));
+  std::cout<<"Sign:"<<txt.to_hex_string()<<std::endl;
+  REQUIRE(sm2pkey.verify(plain,txt));
 
 }

@@ -24,10 +24,11 @@ TEST_CASE("test cer") {
     PKey caPUB=caCerLoad.get_public_key();
 
     std::string text="我是小朋友";
-    Bytes sign=ca.sign(String(text).to_bytes());
+    Bytes plain=String(text).to_bytes();
+    Bytes sign=ca.sign(plain);
     std::cout<<"[sign]:"<<sign.to_hex_string();
-    REQUIRE(caPUB.has_public_key());
-    REQUIRE(caPUB.verify(String(text).to_bytes(), sign));
+    // REQUIRE(caPUB.has_public_key());
+    REQUIRE(ca.verify(plain, sign));
 
 
   } catch (Exception &e) {
