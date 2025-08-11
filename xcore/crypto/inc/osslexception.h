@@ -3,9 +3,9 @@
 #include "exceptions.h"
 #include "openssl.h"
 
-class OpenSSLException : public Exception {
+class CryptoException : public Exception {
 public:
-  OpenSSLException(std::string_view msg) : Exception(msg) {}
+  CryptoException(std::string_view msg) : Exception(msg) {}
   virtual String what() noexcept {
     printErrorStack();
     return std::format("[OpenSSL异常]:{}", msg);

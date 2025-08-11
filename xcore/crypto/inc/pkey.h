@@ -19,7 +19,7 @@ public:
   PKey(EVP_PKEY_ptr k) : m_pkey(std::move(k)) {}
   void save_public(std::string_view filename);
   void save_private(std::string_view filename, std::string_view passwd = "");
-  EVP_PKEY* get_raw()const{return m_pkey.get();}
+  EVP_PKEY* get_EVP_PKEY()const{return m_pkey.get();}
 
 
 private:

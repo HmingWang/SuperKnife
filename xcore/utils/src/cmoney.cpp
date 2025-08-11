@@ -300,7 +300,7 @@ CMoney CMoney::from_string(LPCSTR ptr, int iScale)
 	p = ptr;
 	String Buffer(iLen + 5);
 
-	unsigned char *pBuffer = Buffer.raw();
+	unsigned char *pBuffer = (unsigned char *)(Buffer.get().data());
 	bool bNegative = false;
 
 	if (*p == '-')

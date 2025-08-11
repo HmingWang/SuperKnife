@@ -98,6 +98,8 @@
         "xutility": "cpp",
         "applink.c": "cpp",
         "filesystem": "cpp",
-        "coroutine": "cpp"
+        "coroutine": "cpp",
+        "ranges": "cpp",
+        "span": "cpp"
     }
 }

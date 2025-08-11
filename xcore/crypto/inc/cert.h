@@ -2,28 +2,34 @@
 #include "pkey.h"
 #include "openssl.h"
 #include "csr.h"
-namespace x::crypto {
+namespace x::crypto
+{
 
+  class Cert
+  {
 
-
-class Cert {
-
-public:
-  Cert(X509_ptr cer) : m_cert(std::move(cer)) {}
-  class Generator {
   public:
-    static Cert create_self_signed(PKey &key, std::string_view subject, const EVP_MD *md,
-                                   int vaild_days = 365);
-    static Cert create_from_csr(CSR &req, PKey &cakey, Cert &caCert,
-                                int vaild_days = 365);
-    static Cert load(std::string_view filename);
+    Cert(X509_ptr cer) : m_cert(std::move(cer)) {}
+    class Generator
+    {
+    public:
+      static Cert create_self_signed(PKey &key, std::string_view subject, const EVP_MD *md,
+                                     int vaild_days = 365);
+      static Cert create_from_csr(CSR &req, PKey &cakey, Cert &caCert,const EVP_MD *md,
+                                  int vaild_days = 365);
+      static Cert load(std::string_view filename);
+    };
+
+    void save(std::string_view filename);
+    void print_info();
+    X509* get_X509() const { return m_cert.get(); }
+
+  private:
+    void print_basic();
+    void print_extensions();
+    void print_finger_points();
+
+    X509_ptr m_cert;
   };
-
-  void save();
-  void print_info();
-
-private:
-  X509_ptr m_cert;
-};
 
 } // namespace x::crypto

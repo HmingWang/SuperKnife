@@ -8,6 +8,7 @@
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 #include <memory>
+#include "osslexception.h"
 
 #define OPENSSL_UNIQ_PTR_WHIT_DELETER(name)                                    \
                                                                                \
@@ -30,7 +31,7 @@ OPENSSL_UNIQ_PTR_WHIT_DELETER(X509_EXTENSION);
 #define OSSL_ASSERT_FUNC(func)                                                 \
   do {                                                                         \
     if (func <=0) {                                                        \
-      throw OpenSSLException(                                                  \
+      throw CryptoException(                                                  \
           std::format("OpenSSL Assert Function Failed:{}:{}:{}", __FILE__,     \
                       __LINE__, #func));                                       \
     }                                                                          \
@@ -39,7 +40,7 @@ OPENSSL_UNIQ_PTR_WHIT_DELETER(X509_EXTENSION);
 #define OSSL_ASSERT_PTR(ptr)                                                   \
   do {                                                                         \
     if (ptr == nullptr) {                                                      \
-      throw OpenSSLException(std::format("OpenSSL Assert Pointer Failed:{}",   \
+      throw CryptoException(std::format("OpenSSL Assert Pointer Failed:{}",   \
                                          __FILE__, __LINE__, #ptr));           \
     }                                                                          \
   } while (0)

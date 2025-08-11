@@ -13,6 +13,12 @@ class String : public Container<std::string>
     inline static std::string blank = " \t\n\r\f\v";
 
 public:
+    class Utils
+    {
+    public:
+        static String from_bytes(const Bytes &b);
+    };
+
     // 构造函数
     String() = default;
     String(std::string_view s);
@@ -42,7 +48,6 @@ public:
 
     // 函数转换区
     Bytes to_bytes() const;
-    static String from_bytes(Bytes b);
     const char *to_cstr() const;
     std::string to_string() const;
     int to_int() const;
@@ -71,6 +76,8 @@ public:
             return std::hash<std::string>{}(prefix.to_string());
         }
     };
+
+
 };
 
 /// @brief 定义 String 的格式化输出, 用于 std::format
