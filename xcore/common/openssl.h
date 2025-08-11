@@ -8,6 +8,8 @@
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 #include <memory>
+#include <openssl/core_names.h>
+
 #include "osslexception.h"
 
 #define OPENSSL_UNIQ_PTR_WHIT_DELETER(name)                                    \
@@ -26,7 +28,7 @@ OPENSSL_UNIQ_PTR_WHIT_DELETER(EC_GROUP);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(BIO);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(EVP_CIPHER);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(X509_EXTENSION);
-
+OPENSSL_UNIQ_PTR_WHIT_DELETER(EVP_MD_CTX);
 
 #define OSSL_ASSERT_FUNC(func)                                                 \
   do {                                                                         \

@@ -5,12 +5,13 @@
 
 class CryptoException : public Exception {
 public:
-  CryptoException(std::string_view msg) : Exception(msg) {}
-  virtual String what() noexcept {
+  CryptoException(std::string_view msg) : Exception(std::format("[OSSL异常]:",msg)) {}
+  virtual const char* what() const noexcept override {
     printErrorStack();
-    return std::format("[OpenSSL异常]:{}", msg);
+    return msg;
   }
-  void printErrorStack() {
+  void printErrorStack() const{
+    std::cerr << "!!!Error:";
     unsigned long err_code;
     const char *file, *data, *func;
     int line, flags;

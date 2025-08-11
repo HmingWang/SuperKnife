@@ -24,6 +24,7 @@ namespace x::crypto
     void print_info();
     X509* get_X509() const { return m_cert.get(); }
 
+
   private:
     void print_basic();
     void print_extensions();

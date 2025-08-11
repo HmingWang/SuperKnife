@@ -12,15 +12,18 @@ public:
   public:
     static PKey sm2();
     static PKey load_public(std::string_view filename);
-    static PKey load_private(std::string_view filename,std::string_view passwd="");
+    static PKey load_private(std::string_view filename,
+                             std::string_view passwd = "");
   };
 
 public:
   PKey(EVP_PKEY_ptr k) : m_pkey(std::move(k)) {}
   void save_public(std::string_view filename);
   void save_private(std::string_view filename, std::string_view passwd = "");
-  EVP_PKEY* get_EVP_PKEY()const{return m_pkey.get();}
-
+  EVP_PKEY *get_EVP_PKEY() const { return m_pkey.get(); }
+  bool has_private_key() const;
+  bool has_public_key() const;
+  bool match()const; //检查密钥对匹配
 
 private:
   EVP_PKEY_ptr m_pkey; // uniq ptr with deleter
