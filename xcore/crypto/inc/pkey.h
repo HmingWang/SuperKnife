@@ -23,7 +23,13 @@ public:
   EVP_PKEY *get_EVP_PKEY() const { return m_pkey.get(); }
   bool has_private_key() const;
   bool has_public_key() const;
-  bool match()const; //检查密钥对匹配
+  bool match() const; // 检查密钥对匹配
+
+  // 加密解密
+  Bytes encrypt(const Bytes &plaintext);
+  Bytes decrypt(const Bytes &ciphertext);
+  Bytes sign(const Bytes &message);
+  bool verify(const Bytes &message, const Bytes &signature);
 
 private:
   EVP_PKEY_ptr m_pkey; // uniq ptr with deleter

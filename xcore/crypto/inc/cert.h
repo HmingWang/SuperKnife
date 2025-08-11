@@ -20,15 +20,16 @@ namespace x::crypto
       static Cert load(std::string_view filename);
     };
 
-    void save(std::string_view filename);
-    void print_info();
+    void save(std::string_view filename)const;
+    void print_info()const;
     X509* get_X509() const { return m_cert.get(); }
+    PKey get_public_key() const;
 
 
   private:
-    void print_basic();
-    void print_extensions();
-    void print_finger_points();
+    void print_basic() const;
+    void print_extensions() const;
+    void print_finger_points() const;
 
     X509_ptr m_cert;
   };
