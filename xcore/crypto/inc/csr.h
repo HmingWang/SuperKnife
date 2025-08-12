@@ -8,7 +8,7 @@ class CSR {
 public:
   class Generator {
   public:
-    static CSR create(PKey &key, std::string_view subject);
+    static CSR create(KeyPair &key, std::string_view subject);
   };
 
 public:

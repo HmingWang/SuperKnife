@@ -5,7 +5,7 @@
 
 namespace x::crypto {
 
-CSR CSR::Generator::create(PKey &key, std::string_view subject) {
+CSR CSR::Generator::create(KeyPair &key, std::string_view subject) {
 
   X509_REQ_ptr req(X509_REQ_new());
   OSSL_ASSERT_PTR(req);

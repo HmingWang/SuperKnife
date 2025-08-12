@@ -29,6 +29,8 @@ OPENSSL_UNIQ_PTR_WHIT_DELETER(BIO);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(EVP_CIPHER);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(X509_EXTENSION);
 OPENSSL_UNIQ_PTR_WHIT_DELETER(EVP_MD_CTX);
+OPENSSL_UNIQ_PTR_WHIT_DELETER(EVP_MD);
+
 
 #define OSSL_ASSERT_FUNC(func)                                                 \
   do {                                                                         \

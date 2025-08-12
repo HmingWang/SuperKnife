@@ -99,6 +99,7 @@ public:
     [[nodiscard]] bool empty() const { return _data.empty(); }
     [[nodiscard]] auto length() const { return _data.size(); };
     [[nodiscard]] auto size() const { return _data.size(); };
+    auto resize(size_type size) {return _data.resize(size);};
 
     // 元素访问
     auto &operator[](size_type pos)

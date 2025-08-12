@@ -11,15 +11,15 @@ TEST_CASE("test keypair") {
   system("rm *.pem");
 
   try {
-    PKey key = PKey::Generator::sm2();
+    KeyPair key = KeyPair::Generator::sm2();
     key.save_public("pub.pem");
     key.save_private("priv.pem", "123456");
     REQUIRE(key.has_private_key());
     REQUIRE(key.has_public_key());
     REQUIRE(key.match());
 
-    PKey key_priv = PKey::Generator::load_private("priv.pem", "123456");
-    PKey key_pub = PKey::Generator::load_public("pub.pem");
+    KeyPair key_priv = KeyPair::Generator::load_private("priv.pem", "123456");
+    KeyPair key_pub = KeyPair::Generator::load_public("pub.pem");
     REQUIRE(key_priv.has_private_key());
     REQUIRE(key_priv.has_public_key());//私钥带有公钥信息
     REQUIRE(key_pub.has_public_key());

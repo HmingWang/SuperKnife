@@ -6,7 +6,7 @@
 
 using namespace x::crypto;
 
-Cert Cert::Generator::create_self_signed(PKey &key, std::string_view subject,
+Cert Cert::Generator::create_self_signed(KeyPair &key, std::string_view subject,
                                          const EVP_MD *md, int vaild_days) {
   X509_ptr cert(X509_new());
   OSSL_ASSERT_PTR(cert);
@@ -35,7 +35,7 @@ Cert Cert::Generator::create_self_signed(PKey &key, std::string_view subject,
   return std::move(Cert(std::move(cert)));
 }
 
-Cert Cert::Generator::create_from_csr(CSR &req, PKey &cakey, Cert &caCert,
+Cert Cert::Generator::create_from_csr(CSR &req, KeyPair &cakey, Cert &caCert,
                                       const EVP_MD *md, int vaild_days) {
   X509_ptr cert(X509_new());
   OSSL_ASSERT_PTR(cert);
@@ -209,6 +209,6 @@ void Cert::print_finger_points() const {
   }
 }
 
-PKey Cert::get_public_key() const {
-  return std::move(PKey(std::move(EVP_PKEY_ptr(X509_get_pubkey(get_X509())))));
+KeyPair Cert::get_public_key() const {
+  return std::move(KeyPair(std::move(EVP_PKEY_ptr(X509_get_pubkey(get_X509())))));
 }

@@ -7,7 +7,8 @@
 
 using namespace x::crypto;
 
-PKey PKey::Generator::sm2() {
+KeyPair KeyPair::Generator::sm2()
+{
   EVP_PKEY_CTX_ptr ctx(EVP_PKEY_CTX_new_id(EVP_PKEY_SM2, nullptr));
   EVP_PKEY *key = nullptr;
 
@@ -16,17 +17,19 @@ PKey PKey::Generator::sm2() {
   OSSL_ASSERT_FUNC(EVP_PKEY_keygen_init(ctx.get()));
   OSSL_ASSERT_FUNC(EVP_PKEY_keygen(ctx.get(), &key));
 
-  return std::move(PKey(EVP_PKEY_ptr(key)));
+  return std::move(KeyPair(EVP_PKEY_ptr(key)));
 }
 
-void PKey::save_public(std::string_view filename) {
+void KeyPair::save_public(std::string_view filename)
+{
   OSSL_ASSERT_PTR(m_pkey);
   BIO_ptr bio(BIO_new_file(filename.data(), "w"));
   OSSL_ASSERT_PTR(bio);
   OSSL_ASSERT_FUNC(PEM_write_bio_PUBKEY(bio.get(), m_pkey.get()));
 }
 
-void PKey::save_private(std::string_view filename, std::string_view passwd) {
+void KeyPair::save_private(std::string_view filename, std::string_view passwd)
+{
   OSSL_ASSERT_PTR(m_pkey);
   BIO_ptr bio(BIO_new_file(filename.data(), "w"));
   OSSL_ASSERT_PTR(bio);
@@ -35,8 +38,9 @@ void PKey::save_private(std::string_view filename, std::string_view passwd) {
       (unsigned char *)passwd.data(), passwd.size(), nullptr, nullptr));
 }
 
-PKey PKey::Generator::load_private(std::string_view filename,
-                                   std::string_view passwd) {
+KeyPair KeyPair::Generator::load_private(std::string_view filename,
+                                   std::string_view passwd)
+{
   BIO_ptr bio(BIO_new_file(filename.data(), "r"));
   OSSL_ASSERT_PTR(bio);
 
@@ -44,39 +48,47 @@ PKey PKey::Generator::load_private(std::string_view filename,
                                            (void *)passwd.data()));
 
   OSSL_ASSERT_PTR(key);
-  return std::move(PKey(std::move(key)));
+  return std::move(KeyPair(std::move(key)));
 }
 
-PKey PKey::Generator::load_public(std::string_view filename) {
+KeyPair KeyPair::Generator::load_public(std::string_view filename)
+{
   BIO_ptr bio(BIO_new_file(filename.data(), "r"));
   OSSL_ASSERT_PTR(bio);
 
   EVP_PKEY_ptr key(PEM_read_bio_PUBKEY(bio.get(), nullptr, nullptr, nullptr));
   OSSL_ASSERT_PTR(key);
-  return std::move(PKey(std::move(key)));
+  return std::move(KeyPair(std::move(key)));
 }
 
-bool PKey::has_public_key() const {
+bool KeyPair::has_public_key() const
+{
   int type = EVP_PKEY_get_base_id(get_EVP_PKEY());
 
-  if (type == EVP_PKEY_RSA || type == EVP_PKEY_RSA_PSS) {
+  if (type == EVP_PKEY_RSA || type == EVP_PKEY_RSA_PSS)
+  {
     BIGNUM *n = nullptr;
-    if (EVP_PKEY_get_bn_param(get_EVP_PKEY(), OSSL_PKEY_PARAM_RSA_N, &n)) {
+    if (EVP_PKEY_get_bn_param(get_EVP_PKEY(), OSSL_PKEY_PARAM_RSA_N, &n))
+    {
       BN_free(n);
       return true;
     }
     return false;
-  } else { // EC / SM2 等
+  }
+  else
+  { // EC / SM2 等
     size_t len = 0;
     if (EVP_PKEY_get_octet_string_param(get_EVP_PKEY(), OSSL_PKEY_PARAM_PUB_KEY,
-                                        nullptr, 0, &len)) {
+                                        nullptr, 0, &len))
+    {
       return len > 0;
     }
     return false;
   }
 }
 
-bool PKey::has_private_key() const {
+bool KeyPair::has_private_key() const
+{
   EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(get_EVP_PKEY(), nullptr);
   if (!ctx)
     return false;
@@ -86,7 +98,8 @@ bool PKey::has_private_key() const {
   return ret == 1;
 }
 
-bool PKey::match() const {
+bool KeyPair::match() const
+{
 
   EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(get_EVP_PKEY(), nullptr);
   if (!ctx)
@@ -98,7 +111,8 @@ bool PKey::match() const {
 
 // ==================== Crypto Implementation ====================
 
-Bytes PKey::encrypt(const Bytes &plaintext) {
+Bytes KeyPair::encrypt(const Bytes &plaintext)
+{
   if (plaintext.empty())
     return {};
 
@@ -113,10 +127,12 @@ Bytes PKey::encrypt(const Bytes &plaintext) {
   Bytes ciphertext(outlen);
   OSSL_ASSERT_FUNC(EVP_PKEY_encrypt(ctx.get(), ciphertext.c_ptr(), &outlen,
                                     plaintext.c_cptr(), plaintext.size()));
+  ciphertext.resize(outlen);
   return std::move(ciphertext);
 }
 
-Bytes PKey::decrypt(const Bytes &ciphertext) {
+Bytes KeyPair::decrypt(const Bytes &ciphertext)
+{
   if (ciphertext.empty())
     return {};
 
@@ -132,11 +148,12 @@ Bytes PKey::decrypt(const Bytes &ciphertext) {
   Bytes plaintext(outlen);
   OSSL_ASSERT_FUNC(EVP_PKEY_decrypt(ctx.get(), plaintext.c_ptr(), &outlen,
                                     ciphertext.c_cptr(), ciphertext.size()));
-
+  plaintext.resize(outlen);
   return std::move(plaintext);
 }
 
-Bytes PKey::sign(const Bytes &message) {
+Bytes KeyPair::sign(const Bytes &message)
+{
   if (message.empty())
     return {};
 
@@ -152,11 +169,13 @@ Bytes PKey::sign(const Bytes &message) {
   Bytes signature(siglen);
   OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), signature.c_ptr(), &siglen,
                                   message.c_cptr(), message.size()));
+  signature.resize(siglen);
 
   return std::move(signature);
 }
 
-bool PKey::verify(const Bytes &message, const Bytes &signature) {
+bool KeyPair::verify(const Bytes &message, const Bytes &signature)
+{
   if (message.empty() || signature.empty())
     return false;
 

@@ -11,9 +11,9 @@
 using namespace x::crypto;
 TEST_CASE("test cer") {
   try {
-    PKey ca = PKey::Generator::sm2();
+    KeyPair ca = KeyPair::Generator::sm2();
     Cert caCer = Cert::Generator::create_self_signed(ca, "CN=test", EVP_sm3());
-    PKey test=PKey::Generator::sm2();
+    KeyPair test=KeyPair::Generator::sm2();
     CSR csr=CSR::Generator::create(test, "CN=test1");
 
     Cert testCer=Cert::Generator::create_from_csr(csr, ca, caCer, EVP_sm3());
@@ -21,7 +21,7 @@ TEST_CASE("test cer") {
     testCer.save("test.pem");
 
     Cert caCerLoad=Cert::Generator::load("ca.pem");
-    PKey caPUB=caCerLoad.get_public_key();
+    KeyPair caPUB=caCerLoad.get_public_key();
 
     std::string text="我是小朋友";
     Bytes plain=String(text).to_bytes();

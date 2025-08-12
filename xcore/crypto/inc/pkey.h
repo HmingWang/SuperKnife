@@ -6,18 +6,18 @@
 
 namespace x::crypto {
 
-class PKey {
+class KeyPair {
 public:
   class Generator {
   public:
-    static PKey sm2();
-    static PKey load_public(std::string_view filename);
-    static PKey load_private(std::string_view filename,
+    static KeyPair sm2();
+    static KeyPair load_public(std::string_view filename);
+    static KeyPair load_private(std::string_view filename,
                              std::string_view passwd = "");
   };
 
 public:
-  PKey(EVP_PKEY_ptr k) : m_pkey(std::move(k)) {}
+  KeyPair(EVP_PKEY_ptr k) : m_pkey(std::move(k)) {}
   void save_public(std::string_view filename);
   void save_private(std::string_view filename, std::string_view passwd = "");
   EVP_PKEY *get_EVP_PKEY() const { return m_pkey.get(); }
