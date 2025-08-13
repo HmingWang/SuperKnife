@@ -110,8 +110,7 @@ TEST_CASE("test md5")
   Bytes bin = d.hash_file("test.txt");
   std::cout << "MD5 File:" << bin.to_hex_string() << endl;
 
-  Bytes b{0x11,0x22,0x33};
-  Bytes bin1 = d.hash({0x11,0x11});
+  Bytes bin1 = d.hash({49,49,49});
   std::cout << "MD5:" << bin1.to_hex_string() << endl;
   REQUIRE(bin.to_hex_string()==bin1.to_hex_string());
 }

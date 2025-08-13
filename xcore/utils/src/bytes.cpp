@@ -37,12 +37,3 @@ std::string Bytes::to_hex_string()
     return oss.str();
 }
 
-std::vector<unsigned char *> Bytes::to_uint8()
-{
-    return std::vector<unsigned char *>();
-}
-
-std::byte *Bytes::data()
-{
-    return reinterpret_cast<std::byte *>(_data.data());
-}
