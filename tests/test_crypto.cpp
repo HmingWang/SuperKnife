@@ -1,0 +1,116 @@
+#include "catch2/catch_test_macros.hpp"
+#include "exceptions.h"
+#include "pkey.h"
+#include <catch2/catch_all.hpp>
+#include <cstdlib>
+#include <exception>
+#include "cert.h"
+#include "digest.h"
+
+using namespace x::crypto;
+using namespace std;
+
+TEST_CASE("0.Prerequisite")
+{
+#ifdef _WIN32
+  system("chcp 65001");
+  system("del *.pem");
+#endif
+}
+
+TEST_CASE("test keypair")
+{
+
+  try
+  {
+    KeyPair key = KeyPair::Generator::sm2();
+    key.save_public("pub.pem");
+    key.save_private("priv.pem", "123456");
+    REQUIRE(key.has_private_key());
+    REQUIRE(key.has_public_key());
+    REQUIRE(key.match());
+
+    KeyPair key_priv = KeyPair::Generator::load_private("priv.pem", "123456");
+    KeyPair key_pub = KeyPair::Generator::load_public("pub.pem");
+    REQUIRE(key_priv.has_private_key());
+    REQUIRE(key_priv.has_public_key()); // 私钥带有公钥信息
+    REQUIRE(key_pub.has_public_key());
+    REQUIRE_FALSE(key_pub.has_private_key());
+    REQUIRE(key_priv.match());
+    REQUIRE_FALSE(key_pub.match()); // 只载入公钥无法匹配
+  }
+  catch (std::exception &e)
+  {
+    std::cerr << e.what();
+    REQUIRE(false);
+  }
+}
+
+TEST_CASE("sm2 encrypto/decrypto")
+{
+
+  KeyPair sm2pkey = KeyPair::Generator::sm2();
+
+  std::string plaintxt = "我是中国人";
+  Bytes txt = sm2pkey.encrypt(String(plaintxt).to_bytes());
+  std::cout << "明文：" << plaintxt << std::endl;
+  std::cout << "加密：" << txt.to_hex_string() << std::endl;
+  Bytes txt2 = sm2pkey.decrypt(txt);
+  std::cout << "解密：" << txt2.to_string() << std::endl;
+  REQUIRE(plaintxt == txt2.to_string());
+}
+
+TEST_CASE("sm2 sign/verify")
+{
+
+  KeyPair sm2pkey = KeyPair::Generator::sm2();
+
+  std::string plaintxt = "我是中国人";
+  Bytes plain = String(plaintxt).to_bytes();
+  Bytes txt = sm2pkey.sign(plain);
+  std::cout << "明文：" << plaintxt << std::endl;
+  std::cout << "Sign:" << txt.to_hex_string() << std::endl;
+  REQUIRE(sm2pkey.verify(plain, txt));
+}
+
+TEST_CASE("test cer")
+{
+  try
+  {
+    KeyPair ca = KeyPair::Generator::sm2();
+    Cert caCer = Cert::Generator::create_self_signed(ca, "CN=test", EVP_sm3());
+    KeyPair test = KeyPair::Generator::sm2();
+    CSR csr = CSR::Generator::create(test, "CN=test1");
+
+    Cert testCer = Cert::Generator::create_from_csr(csr, ca, caCer, EVP_sm3());
+    caCer.save("ca.pem");
+    testCer.save("test.pem");
+
+    Cert caCerLoad = Cert::Generator::load("ca.pem");
+    KeyPair caPUB = caCerLoad.get_public_key();
+
+    std::string text = "我是小朋友";
+    Bytes plain = String(text).to_bytes();
+    Bytes sign = ca.sign(plain);
+    std::cout << "[sign]:" << sign.to_hex_string() << endl;
+    // REQUIRE(caPUB.has_public_key());
+    REQUIRE(ca.verify(plain, sign));
+  }
+  catch (Exception &e)
+  {
+    std::cerr << e.what();
+    REQUIRE(false);
+  }
+}
+
+TEST_CASE("test md5")
+{
+  system("echo '111'> test.txt");
+  Digest d = Digest::Generator::md5();
+  Bytes bin = d.hash_file("E:\\123.txt");
+  std::cout << "MD5 File:" << bin.to_hex_string() << endl;
+
+  Bytes bin1 = d.hash(String("111").to_bytes());
+  std::cout << "MD5:" << bin1.to_hex_string() << endl;
+  REQUIRE(bin.to_hex_string()==bin1.to_hex_string());
+}

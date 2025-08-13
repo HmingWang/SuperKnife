@@ -79,7 +79,7 @@ public:
     // 8. 移动赋值运算符
     Container &operator=(Container &&) noexcept(std::is_nothrow_move_assignable_v<T>) = default;
     // 9. 析构函数
-    ~Container() = default;
+    virtual ~Container() = default;
     // 10. 交换函数
     void swap(Container &other) noexcept(std::is_nothrow_swappable_v<T>)
     {
@@ -99,7 +99,8 @@ public:
     [[nodiscard]] bool empty() const { return _data.empty(); }
     [[nodiscard]] auto length() const { return _data.size(); };
     [[nodiscard]] auto size() const { return _data.size(); };
-    auto resize(size_type size) {return _data.resize(size);};
+    auto resize(size_type size) { return _data.resize(size); };
+    auto clear() { return _data.clear(); }
 
     // 元素访问
     auto &operator[](size_type pos)
@@ -134,16 +135,16 @@ public:
         return _data.data();
     }
     // 获取c风格指针
-    uint8 *c_ptr()
+    void *c_ptr()
         requires requires { _data.data(); }
     {
-        return reinterpret_cast<uint8 *>(_data.data());
+        return reinterpret_cast<void *>(_data.data());
     }
     // 获取c风格const指针
-    const uint8 *c_cptr() const
+    const void *c_cptr() const
         requires requires { _data.data(); }
     {
-        return reinterpret_cast<const uint8 *>(_data.data());
+        return reinterpret_cast<const void *>(_data.data());
     }
 
     // 视图操作

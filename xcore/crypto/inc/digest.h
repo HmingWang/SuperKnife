@@ -19,7 +19,7 @@ namespace x::crypto
 
         Digest(EVP_MD_ptr md) : m_md(std::move(md)) {}
 
-        Bytes hash_file(std::string_view filename);
+        Bytes hash_file(const std::string_view filename);
         Bytes hash(Bytes data);
         EVP_MD* get_EVP_MD() const {return m_md.get();}
 

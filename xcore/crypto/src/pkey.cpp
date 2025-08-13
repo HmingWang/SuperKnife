@@ -39,7 +39,7 @@ void KeyPair::save_private(std::string_view filename, std::string_view passwd)
 }
 
 KeyPair KeyPair::Generator::load_private(std::string_view filename,
-                                   std::string_view passwd)
+                                         std::string_view passwd)
 {
   BIO_ptr bio(BIO_new_file(filename.data(), "r"));
   OSSL_ASSERT_PTR(bio);
@@ -122,11 +122,11 @@ Bytes KeyPair::encrypt(const Bytes &plaintext)
 
   size_t outlen;
   OSSL_ASSERT_FUNC(EVP_PKEY_encrypt(ctx.get(), nullptr, &outlen,
-                                    plaintext.c_cptr(), plaintext.size()));
+                                    (const unsigned char *)plaintext.c_cptr(), plaintext.size()));
 
   Bytes ciphertext(outlen);
-  OSSL_ASSERT_FUNC(EVP_PKEY_encrypt(ctx.get(), ciphertext.c_ptr(), &outlen,
-                                    plaintext.c_cptr(), plaintext.size()));
+  OSSL_ASSERT_FUNC(EVP_PKEY_encrypt(ctx.get(), (unsigned char *)ciphertext.c_ptr(), &outlen,
+                                    (const unsigned char *)plaintext.c_cptr(), plaintext.size()));
   ciphertext.resize(outlen);
   return std::move(ciphertext);
 }
@@ -143,11 +143,11 @@ Bytes KeyPair::decrypt(const Bytes &ciphertext)
 
   size_t outlen;
   OSSL_ASSERT_FUNC(EVP_PKEY_decrypt(ctx.get(), nullptr, &outlen,
-                                    ciphertext.c_cptr(), ciphertext.size()));
+                                    (const unsigned char *)ciphertext.c_cptr(), ciphertext.size()));
 
   Bytes plaintext(outlen);
-  OSSL_ASSERT_FUNC(EVP_PKEY_decrypt(ctx.get(), plaintext.c_ptr(), &outlen,
-                                    ciphertext.c_cptr(), ciphertext.size()));
+  OSSL_ASSERT_FUNC(EVP_PKEY_decrypt(ctx.get(), (unsigned char *)plaintext.c_ptr(), &outlen,
+                                    (const unsigned char *)ciphertext.c_cptr(), ciphertext.size()));
   plaintext.resize(outlen);
   return std::move(plaintext);
 }
@@ -165,10 +165,10 @@ Bytes KeyPair::sign(const Bytes &message)
 
   size_t siglen;
   OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), nullptr, &siglen,
-                                  message.c_cptr(), message.size()));
+                                  (const unsigned char*)message.c_cptr(), message.size()));
   Bytes signature(siglen);
-  OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), signature.c_ptr(), &siglen,
-                                  message.c_cptr(), message.size()));
+  OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), ( unsigned char*)signature.c_ptr(), &siglen,
+                                  (const unsigned char*)message.c_cptr(), message.size()));
   signature.resize(siglen);
 
   return std::move(signature);
@@ -185,6 +185,6 @@ bool KeyPair::verify(const Bytes &message, const Bytes &signature)
   OSSL_ASSERT_FUNC(EVP_DigestVerifyInit(md_ctx.get(), nullptr, EVP_sm3(),
                                         nullptr, get_EVP_PKEY()));
 
-  return EVP_DigestVerify(md_ctx.get(), signature.c_cptr(), signature.size(),
-                          message.c_cptr(), message.size()) == 1;
+  return EVP_DigestVerify(md_ctx.get(), (const unsigned char*)signature.c_cptr(), signature.size(),
+                          (const unsigned char*)message.c_cptr(), message.size()) == 1;
 }
