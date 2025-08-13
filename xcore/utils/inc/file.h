@@ -1,251 +1,202 @@
 
 #pragma once
 
-#include <iostream>
+#include "exceptions.h"
+#include <cstring> // for memcpy
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <stdexcept>
-#include <cstring> // for memcpy
-
-class File
-{
+class File {
 public:
-    // 打开模式枚举
-    enum OpenMode
-    {
-        ReadOnly = std::ios::in,
-        WriteOnly = std::ios::out,
-        ReadWrite = std::ios::in | std::ios::out,
-        Append = std::ios::app,
-        Binary = std::ios::binary,
-        Truncate = std::ios::trunc,
-        AtEnd = std::ios::ate
-    };
+  // 打开模式枚举
+  enum OpenMode {
+    ReadOnly = std::ios::in,
+    WriteOnly = std::ios::out,
+    ReadWrite = std::ios::in | std::ios::out,
+    Append = std::ios::app,
+    Binary = std::ios::binary,
+    Truncate = std::ios::trunc,
+    AtEnd = std::ios::ate
+  };
 
-    // 构造函数
-    explicit File(std::string_view filename)
-    {
-        open(filename.data());
+  // 构造函数
+  explicit File(std::string_view filename) { open(filename.data()); }
+
+  // 打开文件
+  void open(const std::string &filename, int mode = ReadWrite) {
+    close(); // 先关闭已打开的文件
+
+    this->filename = filename;
+    fileStream.open(filename, static_cast<std::ios_base::openmode>(mode));
+
+    if (!isOpen())
+      throw SystemException("Error open file :" + filename);
+  }
+
+  // 关闭文件
+  void close() {
+    if (isOpen()) {
+      std::cout << "文件：" << filename << "关闭" << std::endl;
+      fileStream.close();
+      filename.clear();
+    }
+  }
+
+  // 检查文件是否打开
+  bool isOpen() const { return fileStream.is_open(); }
+  bool good() const { return fileStream.good(); }
+
+  // 获取文件名
+  std::string getFilename() const { return filename; }
+
+  // ========== 文本操作 ==========
+
+  // 读取一行
+  void readLine(std::string &line) {
+    check_open();
+
+    if (!std::getline(fileStream, line))
+
+      if (!fileStream.eof())
+        throw SystemException("failed to read line from file");
+  }
+
+  // 读取所有行
+  void readAllLines(std::vector<std::string> &lines) {
+    check_open();
+
+    std::streampos originalPos = tell();
+    seek(0, Beg);
+
+    std::string line;
+    while (std::getline(fileStream, line)) {
+      lines.push_back(line);
     }
 
-    // 打开文件
-    void open(const std::string &filename, int mode = ReadWrite)
-    {
-        close(); // 先关闭已打开的文件
-
-        this->filename = filename;
-        fileStream.open(filename, static_cast<std::ios_base::openmode>(mode));
-
-        if (!isOpen())
-            throw SystemException("Error open file :" + filename);
+    // 如果不是因为EOF导致的读取失败，恢复原始位置
+    if (!fileStream.eof()) {
+      seek(originalPos, Beg);
     }
+  }
 
-    // 关闭文件
-    void close()
-    {
-        if (isOpen())
-        {
-            std::cout<<"文件："<<filename<<"关闭"<<std::endl;
-            fileStream.close();
-            filename.clear();
-        }
-    }
+  // 写入字符串
+  void write(const std::string &content) {
+    check_open();
 
-    // 检查文件是否打开
-    bool isOpen() const
-    {
-        return fileStream.is_open();
-    }
-    bool good() const
-    {
-        return fileStream.good();
-    }
+    fileStream << content;
+    if (fileStream.fail())
+      throw SystemException("failed to write content from file");
+  }
 
-    // 获取文件名
-    std::string getFilename() const
-    {
-        return filename;
-    }
+  // 写入一行
+  void writeLine(const std::string &line) { return write(line + "\n"); }
 
-    // ========== 文本操作 ==========
+  // ========== 二进制操作 ==========
 
-    // 读取一行
-    void readLine(std::string &line)
-    {
-        check_open();
+  auto read_binary(Bytes buffer) {
+    check_open();
 
-        if (!std::getline(fileStream, line))
+    fileStream.read((char *)buffer.c_ptr(), buffer.size());
+    if (fileStream.fail() && !fileStream.eof())
+      throw SystemException("failed to read binary from file");
+    return fileStream.gcount();
+  }
 
-            if (!fileStream.eof())
-                throw SystemException("failed to read line from file");
-    }
+  // 写入二进制数据
+  void writeBinary(const char *data, size_t size) {
+    check_open();
 
-    // 读取所有行
-    void readAllLines(std::vector<std::string> &lines)
-    {
-        check_open();
+    fileStream.write(data, size);
+    if (fileStream.fail())
+      throw SystemException("failed to write binary from file");
+  }
 
-        std::streampos originalPos = tell();
-        seek(0, Beg);
+  void write_binary(Bytes data) {
+    check_open();
 
-        std::string line;
-        while (std::getline(fileStream, line))
-        {
-            lines.push_back(line);
-        }
+    fileStream.write((const char *)data.c_cptr(), data.size());
+    if (fileStream.fail())
+      throw SystemException("failed to write binary from file");
+  }
 
-        // 如果不是因为EOF导致的读取失败，恢复原始位置
-        if (!fileStream.eof())
-        {
-            seek(originalPos, Beg);
-        }
-    }
+  // ========== 文件定位 ==========
 
-    // 写入字符串
-    void write(const std::string &content)
-    {
-        check_open();
+  // 定位枚举
+  enum SeekDir {
+    Beg = std::ios::beg,
+    Cur = std::ios::cur,
+    End = std::ios::end
+  };
 
-        fileStream << content;
-        if (fileStream.fail())
-            throw SystemException("failed to write content from file");
-    }
+  // 获取当前位置
+  std::streampos tell() {
+    check_open();
 
-    // 写入一行
-    void writeLine(const std::string &line)
-    {
-        return write(line + "\n");
-    }
+    return fileStream.tellg();
+  }
 
-    // ========== 二进制操作 ==========
+  // 设置位置
+  void seek(std::streampos pos, SeekDir dir = Beg) {
+    check_open();
 
-    // 读取二进制数据 返回实际读取数
-    auto readBinary(char *buffer, size_t size)
-    {
-        check_open();
+    fileStream.seekg(pos, static_cast<std::ios_base::seekdir>(dir));
+    fileStream.seekp(pos, static_cast<std::ios_base::seekdir>(dir));
 
-        fileStream.read(buffer, size);
-        if (fileStream.fail() && !fileStream.eof())
-            throw SystemException("failed to read binary from file");
-        return fileStream.gcount();
-    }
+    if (fileStream.fail())
+      throw SystemException("failed to seek file opsion");
+  }
 
-    // 写入二进制数据
-    bool writeBinary(const char *data, size_t size)
-    {
-        check_open();
+  // 移动到文件开头
+  void rewind() { return seek(0, Beg); }
 
-        fileStream.write(data, size);
-        if (fileStream.fail())
-            throw SystemException("failed to write binary from file");
-    }
+  // ========== 文件信息 ==========
 
-    // 模板方法：读取任意类型数据
-    template <typename T>
-    auto readData(T &data)
-    {
-        return readBinary(reinterpret_cast<char *>(&data), sizeof(T));
-    }
+  // 获取文件大小
+  std::streampos size() {
+    check_open();
 
-    // 模板方法：写入任意类型数据
-    template <typename T>
-    bool writeData(const T &data)
-    {
-        return writeBinary(reinterpret_cast<const char *>(&data), sizeof(T));
-    }
+    std::streampos current = tell();
+    seek(0, End);
+    std::streampos size = tell();
+    seek(current, Beg);
 
-    // ========== 文件定位 ==========
+    return size;
+  }
 
-    // 定位枚举
-    enum SeekDir
-    {
-        Beg = std::ios::beg,
-        Cur = std::ios::cur,
-        End = std::ios::end
-    };
+  // 检查是否到达文件末尾
+  bool eof() const {
+    check_open();
 
-    // 获取当前位置
-    std::streampos tell()
-    {
-        check_open();
+    return fileStream.eof();
+  }
 
-        return fileStream.tellg();
-    }
+  // 清空文件内容
+  void truncate() {
+    check_open();
 
-    // 设置位置
-    bool seek(std::streampos pos, SeekDir dir = Beg)
-    {
-        check_open();
+    close();
+    fileStream.open(filename, std::ios::out | std::ios::trunc);
+  }
 
-        fileStream.seekg(pos, static_cast<std::ios_base::seekdir>(dir));
-        fileStream.seekp(pos, static_cast<std::ios_base::seekdir>(dir));
+  // 刷新缓冲区
+  void flush() {
+    check_open();
 
-        if (fileStream.fail())
-            throw SystemException("failed to seek file opsion");
-    }
+    fileStream.flush();
+    if (fileStream.fail())
+      throw SystemException("failed to flush file ");
+  }
 
-    // 移动到文件开头
-    bool rewind()
-    {
-        return seek(0, Beg);
-    }
-
-    // ========== 文件信息 ==========
-
-    // 获取文件大小
-    std::streampos size()
-    {
-        check_open();
-
-        std::streampos current = tell();
-        seek(0, End);
-        std::streampos size = tell();
-        seek(current, Beg);
-
-        return size;
-    }
-
-    // 检查是否到达文件末尾
-    bool eof() const
-    {
-        check_open();
-
-        return fileStream.eof();
-    }
-
-    // 清空文件内容
-    void truncate()
-    {
-        check_open();
-
-        close();
-        fileStream.open(filename, std::ios::out | std::ios::trunc);
-    }
-
-    // 刷新缓冲区
-    void flush()
-    {
-        check_open();
-
-        fileStream.flush();
-        if (fileStream.fail())
-            throw SystemException("failed to flush file ");
-    }
-
-    // 析构函数
-    ~File()
-    {
-        close();
-    }
+  // 析构函数
+  ~File() { close(); }
 
 private:
-    std::fstream fileStream;
-    std::string filename;
+  std::fstream fileStream;
+  std::string filename;
 
-    void check_open() const
-    {
-        if (!isOpen())
-            throw SystemException("file not open");
-    }
+  void check_open() const {
+    if (!isOpen())
+      throw SystemException("file not open");
+  }
 };

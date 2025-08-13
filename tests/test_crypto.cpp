@@ -107,10 +107,11 @@ TEST_CASE("test md5")
 {
   system("echo '111'> test.txt");
   Digest d = Digest::Generator::md5();
-  Bytes bin = d.hash_file("E:\\123.txt");
+  Bytes bin = d.hash_file("test.txt");
   std::cout << "MD5 File:" << bin.to_hex_string() << endl;
 
-  Bytes bin1 = d.hash(String("111").to_bytes());
+  Bytes b{0x11,0x22,0x33};
+  Bytes bin1 = d.hash({0x11,0x11});
   std::cout << "MD5:" << bin1.to_hex_string() << endl;
   REQUIRE(bin.to_hex_string()==bin1.to_hex_string());
 }

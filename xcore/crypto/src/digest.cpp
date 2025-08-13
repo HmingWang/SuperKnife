@@ -39,7 +39,7 @@ Bytes x::crypto::Digest::hash_file(const std::string_view filename)
     Bytes buffer(4096);
     while (f.good())
     {
-        auto read_bytes = f.readData(buffer);
+        auto read_bytes = f.read_binary(buffer);
         if (read_bytes > 0)
             OSSL_ASSERT_FUNC(EVP_DigestUpdate(ctx.get(), buffer.c_cptr(), read_bytes));
     }
