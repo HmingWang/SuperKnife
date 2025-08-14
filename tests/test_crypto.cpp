@@ -105,12 +105,36 @@ TEST_CASE("test cer")
 
 TEST_CASE("test md5")
 {
-  system("echo '111'> test.txt");
+  system("echo 111> test.txt");
   Digest d = Digest::Generator::md5();
   Bytes bin = d.hash_file("test.txt");
   std::cout << "MD5 File:" << bin.to_hex_string() << endl;
 
-  Bytes bin1 = d.hash({49,49,49});
-  std::cout << "MD5:" << bin1.to_hex_string() << endl;
+  Bytes bin1 = d.hash({0x31,0x31,0x31,0x0d,0x0a});
+  std::cout << "MD5 Char:" << bin1.to_hex_string() << endl;
+  REQUIRE(bin.to_hex_string()==bin1.to_hex_string());
+}
+
+TEST_CASE("test sm3")
+{
+  system("echo 111> test.txt");
+  Digest d = Digest::Generator::sm3();
+  Bytes bin = d.hash_file("test.txt");
+  std::cout << "SM3 File:" << bin.to_hex_string() << endl;
+
+  Bytes bin1 = d.hash({0x31,0x31,0x31,0x0d,0x0a});
+  std::cout << "SM3 Char:" << bin1.to_hex_string() << endl;
+  REQUIRE(bin.to_hex_string()==bin1.to_hex_string());
+}
+
+TEST_CASE("test sha256")
+{
+  system("echo 111> test.txt");
+  Digest d = Digest::Generator::sha256();
+  Bytes bin = d.hash_file("test.txt");
+  std::cout << "SHA256 File:" << bin.to_hex_string() << endl;
+
+  Bytes bin1 = d.hash({0x31,0x31,0x31,0x0d,0x0a});
+  std::cout << "SHA256 Char:" << bin1.to_hex_string() << endl;
   REQUIRE(bin.to_hex_string()==bin1.to_hex_string());
 }

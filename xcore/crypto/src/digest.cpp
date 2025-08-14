@@ -28,14 +28,14 @@ Digest Digest::Generator::md5()
     return std::move(Digest(std::move(EVP_MD_ptr(EVP_MD_fetch(nullptr, "md5", nullptr)))));
 }
 
-Bytes x::crypto::Digest::hash_file(const std::string_view filename)
+Bytes Digest::hash_file(const std::string_view filename)
 {
 
     EVP_MD_CTX_ptr ctx(EVP_MD_CTX_new());
     OSSL_ASSERT_PTR(ctx);
     OSSL_ASSERT_FUNC(EVP_DigestInit_ex(ctx.get(), get_EVP_MD(), nullptr));
 
-    File f(filename.data());
+    File f(filename.data(),File::OpenMode::BinaryReadWrite);
     Bytes buffer(4096);
     while (f.good())
     {
@@ -52,7 +52,7 @@ Bytes x::crypto::Digest::hash_file(const std::string_view filename)
     return std::move(digest);
 }
 
-Bytes x::crypto::Digest::hash(Bytes data)
+Bytes Digest::hash(Bytes data)
 {
     unsigned int md_len = EVP_MD_size(m_md.get());
     Bytes digest(md_len);

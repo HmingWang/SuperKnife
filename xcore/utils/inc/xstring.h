@@ -13,11 +13,9 @@ class String : public Container<std::string>
     inline static std::string blank = " \t\n\r\f\v";
 
 public:
-    class Utils
-    {
-    public:
-        static String from_bytes(const Bytes &b);
-    };
+    //静态函数，用于构建
+    static String from_bytes(const Bytes &b);
+
 
     // 构造函数
     String() = default;

@@ -6,4 +6,4 @@ target_include_directories(utils PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/inc
 )
 
-target_link_libraries(utils PUBLIC compiler_inf)
+target_link_libraries(utils PUBLIC crypto compiler_inf)

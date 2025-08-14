@@ -4,13 +4,8 @@
 #include <openssl/buffer.h>
 #include <string>
 
-// 检查字符是否为有效的Base64字符
-bool is_base64(char c)
-{
-    return (isalnum(c) || (c == '+') || (c == '/') || (c == '='));
-}
-
-std::string base64_encode(const std::string &in, const bool wrap)
+using namespace x::crypto;
+std::string Base64::Encoder::encode(const Bytes &in, const bool wrap)
 {
     BIO *bio, *b64;
     BUF_MEM *bufferPtr;
@@ -23,25 +18,24 @@ std::string base64_encode(const std::string &in, const bool wrap)
     bio = BIO_new(BIO_s_mem());
     bio = BIO_push(b64, bio);
 
-    BIO_write(bio, in.c_str(), in.length());
+    BIO_write(bio, in.c_cptr(), in.size());
     BIO_flush(bio);
     BIO_get_mem_ptr(bio, &bufferPtr);
     BIO_set_close(bio, BIO_NOCLOSE);
     BIO_free_all(bio);
 
-    return std::string(bufferPtr->data, bufferPtr->length);
+    return std::move(std::string(bufferPtr->data, bufferPtr->length));
 }
 
-std::string base64_decode(const std::string &in)
+Bytes Base64::Decoder::decode(const std::string_view in)
 {
-
     // 预处理输入：移除所有非Base64字符（包括换行符）
     std::string cleaned_input;
     cleaned_input.reserve(in.size());
 
     for (char c : in)
     {
-        if (is_base64(c) || c == '=')
+        if (isalnum(c) || (c == '+') || (c == '/') || (c == '='))
         {
             cleaned_input.push_back(c);
         }
@@ -60,7 +54,7 @@ std::string base64_decode(const std::string &in)
     int length = BIO_read(bio, buffer, decodeLen);
     BIO_free_all(bio);
 
-    std::string out(buffer, length);
+    Bytes out((std::byte *)buffer, length);
     free(buffer);
-    return out;
+    return std::move(out);
 }

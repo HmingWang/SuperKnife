@@ -56,7 +56,7 @@ Bytes String::to_bytes() const
     return std::move(b);
 }
 
-String String::Utils::from_bytes(const Bytes& b)
+String String::from_bytes(const Bytes& b)
 {
     String s(b.length());
     std::transform(b.cbegin(), b.cend(), s.begin(), [](std::byte c)
