@@ -1,6 +1,4 @@
 #pragma once
-#include "exceptions.h"
-#include "headers.h"
 #include "openssl.h"
 #include <openssl/err.h>
 
@@ -31,10 +29,12 @@ namespace x::crypto
     // 加密解密
     Bytes encrypt(const Bytes &plaintext);
     Bytes decrypt(const Bytes &ciphertext);
+    // 签名算法
     Bytes sign(const Bytes &message);
     Bytes sign_file(std::string_view filename);
     bool verify(const Bytes &message, const Bytes &signature);
-    bool verify(std::string_view filename,const Bytes& signature);
+    bool verify_file(std::string_view filename,const Bytes& signature);
+
 
   private:
     EVP_PKEY_ptr m_pkey; // uniq ptr with deleter
