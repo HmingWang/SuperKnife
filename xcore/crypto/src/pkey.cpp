@@ -4,6 +4,7 @@
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 #include <string_view>
+#include "file.h"
 
 using namespace x::crypto;
 
@@ -165,13 +166,30 @@ Bytes KeyPair::sign(const Bytes &message)
 
   size_t siglen;
   OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), nullptr, &siglen,
-                                  (const unsigned char*)message.c_cptr(), message.size()));
+                                  (const unsigned char *)message.c_cptr(), message.size()));
   Bytes signature(siglen);
-  OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), ( unsigned char*)signature.c_ptr(), &siglen,
-                                  (const unsigned char*)message.c_cptr(), message.size()));
+  OSSL_ASSERT_FUNC(EVP_DigestSign(md_ctx.get(), (unsigned char *)signature.c_ptr(), &siglen,
+                                  (const unsigned char *)message.c_cptr(), message.size()));
   signature.resize(siglen);
 
   return std::move(signature);
+}
+
+Bytes x::crypto::KeyPair::sign_file(std::string_view filename)
+{
+  File f(filename, File::OpenMode::BinaryReadWrite);
+
+  EVP_MD_CTX_ptr md_ctx(EVP_MD_CTX_new());
+  OSSL_ASSERT_PTR(md_ctx);
+  OSSL_ASSERT_FUNC(EVP_DigestSignInit(md_ctx.get(), nullptr, EVP_sm3(), nullptr,
+                                      get_EVP_PKEY()));
+  Bytes buffer(4096);
+  while (f.good())
+  {
+    auto read_bytes = f.read_binary(buffer);
+    if (read_bytes > 0)
+      OSSL_ASSERT_FUNC(EVP_DigestUpdate(ctx.get(), buffer.c_cptr(), read_bytes));
+  }
 }
 
 bool KeyPair::verify(const Bytes &message, const Bytes &signature)
@@ -185,6 +203,6 @@ bool KeyPair::verify(const Bytes &message, const Bytes &signature)
   OSSL_ASSERT_FUNC(EVP_DigestVerifyInit(md_ctx.get(), nullptr, EVP_sm3(),
                                         nullptr, get_EVP_PKEY()));
 
-  return EVP_DigestVerify(md_ctx.get(), (const unsigned char*)signature.c_cptr(), signature.size(),
-                          (const unsigned char*)message.c_cptr(), message.size()) == 1;
+  return EVP_DigestVerify(md_ctx.get(), (const unsigned char *)signature.c_cptr(), signature.size(),
+                          (const unsigned char *)message.c_cptr(), message.size()) == 1;
 }
