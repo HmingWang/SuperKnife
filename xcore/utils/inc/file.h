@@ -36,7 +36,6 @@ public:
 
     if (!isOpen())
       throw SystemException("Error open file :" + filename);
-    std::cout << "文件：" << filename << "打开，模式:" << mode << std::endl;
   }
 
   // 关闭文件
@@ -44,7 +43,6 @@ public:
   {
     if (isOpen())
     {
-      std::cout << "文件：" << filename << "关闭" << std::endl;
       fileStream.close();
       filename.clear();
     }

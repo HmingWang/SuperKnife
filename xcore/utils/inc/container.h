@@ -15,6 +15,7 @@ concept ContainerType = requires(T c) {
   { c.clear() } -> std::same_as<void>;
   { c.begin() } -> std::input_iterator;
   { c.end() } -> std::input_or_output_iterator;
+  { c.data() } -> std::convertible_to<typename T::value_type*>;
 };
 
 // 序列容器概念（支持push_back）
@@ -42,7 +43,9 @@ concept AssociativeContainer =
       { c.count(k) } -> std::convertible_to<typename C::size_type>;
     };
 
-template <ContainerType T> class Container {
+template <ContainerType T>
+class Container
+{
   using value_type = typename T::value_type;
   using reference = typename T::reference;
   using const_reference = typename T::const_reference;
@@ -67,7 +70,9 @@ public:
   // 4. 从range构造
   template <std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_value_t<R>, value_type>
-  Container(R &&r) : _data(std::ranges::begin(r), std::ranges::end(r)) {}
+  Container(R &&r) : _data(std::ranges::begin(r), std::ranges::end(r))
+  {
+  }
   // 五/六法则实现
   // 5. 拷贝构造函数
   Container(const Container &) = default;
@@ -82,7 +87,8 @@ public:
   // 9. 析构函数
   virtual ~Container() = default;
   // 10. 交换函数
-  void swap(Container &other) noexcept(std::is_nothrow_swappable_v<T>) {
+  void swap(Container &other) noexcept(std::is_nothrow_swappable_v<T>)
+  {
     using std::swap;
     swap(_data, other._data);
   }
@@ -148,6 +154,20 @@ public:
     return reinterpret_cast<const void *>(_data.data());
   }
 
+  // 获取c风格const uint8指针
+  const uint8 *c_cui8() const
+    requires requires { _data.data(); }
+  {
+    return reinterpret_cast<const uint8 *>(_data.data());
+  }
+
+  // 获取c风格uint8指针
+  uint8 *c_ui8()
+    requires requires { _data.data(); }
+  {
+    return reinterpret_cast<uint8 *>(_data.data());
+  }
+
   // 视图操作
   auto view() & { return std::ranges::ref_view(_data); }
   auto view() const & { return std::ranges::ref_view(_data); }
@@ -161,7 +181,8 @@ public:
 // 特化 std::swap
 template <ContainerType T>
 void swap(Container<T> &lhs,
-          Container<T> &rhs) noexcept(noexcept(lhs.swap(rhs))) {
+          Container<T> &rhs) noexcept(noexcept(lhs.swap(rhs)))
+{
   lhs.swap(rhs);
 }
 

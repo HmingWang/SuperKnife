@@ -20,23 +20,23 @@ public:
     }
 
     // 静态函数
-    
+
     /// @brief 从base64字符串转换
-    /// @param b64 
-    /// @return 
+    /// @param b64
+    /// @return
     static Bytes from_b64(std::string_view b64);
 
     void push_back(std::byte b);
     void push_back(uint8 b);
     std::string to_string();
-    
+
     /// @brief 转为小写风格hex
-    /// @return 
+    /// @return
     std::string to_hex_string();
     /// @brief 转为大写风格hex
-    /// @return 
+    /// @return
     std::string to_HEX_string();
     /// @brief 转为base64字符串
-    /// @return 
+    /// @return
     std::string to_b64();
 };
