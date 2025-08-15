@@ -11,14 +11,17 @@ include(compiler)
 include(ansicolor)
 include(platform)
 
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/local.cmake)
+  include(local)
+endif()
+
 # 添加子目录
 if(CMAKE_JS_VERSION)
   message(STATUS "CMake-js编译node addon")
   add_subdirectory(addon)
-  else()
+else()
   message(STATUS "非CMake-js编译，略过node addon")
 endif()
-
 
 add_subdirectory(xcore)
 add_subdirectory(external/sqlite3)

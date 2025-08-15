@@ -68,10 +68,10 @@ TEST_CASE("sm2 sign/verify")
 
   std::string plaintxt = "我是中国人";
   Bytes plain = String(plaintxt).to_bytes();
-  Bytes txt = sm2pkey.sign(plain);
+  Bytes txt = sm2pkey.sign(plain,Digest::Generator::sm3());
   std::cout << "明文：" << plaintxt << std::endl;
   std::cout << "Sign:" << txt.to_hex_string() << std::endl;
-  REQUIRE(sm2pkey.verify(plain, txt));
+  REQUIRE(sm2pkey.verify(plain,Digest::Generator::sm3(), txt));
 }
 
 TEST_CASE("test cer")
@@ -92,10 +92,10 @@ TEST_CASE("test cer")
 
     std::string text = "我是小朋友";
     Bytes plain = String(text).to_bytes();
-    Bytes sign = ca.sign(plain);
+    Bytes sign = ca.sign(plain,Digest::Generator::sm3());
     std::cout << "[sign]:" << sign.to_hex_string() << endl;
     // REQUIRE(caPUB.has_public_key());
-    REQUIRE(ca.verify(plain, sign));
+    REQUIRE(ca.verify(plain, Digest::Generator::sm3(),sign));
   }
   catch (Exception &e)
   {

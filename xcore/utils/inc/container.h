@@ -174,8 +174,8 @@ public:
   auto view() && { return std::ranges::owning_view(std::move(_data)); }
 
   // 比较操作
-  bool operator==(const T &other) const { return _data == other._data; }
-  bool operator!=(const T &other) const { return _data != other._data; }
+  bool operator==(const Container &other) const { return _data == other._data; }
+  bool operator!=(const Container &other) const { return _data != other._data; }
 };
 
 // 特化 std::swap

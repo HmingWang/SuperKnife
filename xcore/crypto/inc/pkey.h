@@ -1,6 +1,7 @@
 #pragma once
 #include "openssl.h"
 #include <openssl/err.h>
+#include "digest.h"
 
 namespace x::crypto
 {
@@ -30,10 +31,10 @@ namespace x::crypto
     Bytes encrypt(const Bytes &plaintext);
     Bytes decrypt(const Bytes &ciphertext);
     // 签名算法
-    Bytes sign(const Bytes &message);
-    Bytes sign_file(std::string_view filename);
-    bool verify(const Bytes &message, const Bytes &signature);
-    bool verify_file(std::string_view filename,const Bytes& signature);
+    Bytes sign(const Bytes &message,Digest&& md );
+    Bytes sign_file(std::string_view filename,Digest&& md);
+    bool verify(const Bytes &message,Digest&& md, const Bytes &signature);
+    bool verify_file(std::string_view filename,Digest&& md,const Bytes& signature);
 
 
   private:

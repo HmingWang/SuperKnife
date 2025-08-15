@@ -5,6 +5,7 @@
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 #include <string_view>
+#include "digest.h"
 
 using namespace x::crypto;
 
@@ -142,14 +143,14 @@ Bytes KeyPair::decrypt(const Bytes &ciphertext) {
   return std::move(plaintext);
 }
 
-Bytes KeyPair::sign(const Bytes &message) {
+Bytes KeyPair::sign(const Bytes &message,Digest&& md) {
   if (message.empty())
     return {};
 
   EVP_MD_CTX_ptr md_ctx(EVP_MD_CTX_new());
   OSSL_ASSERT_PTR(md_ctx);
 
-  OSSL_ASSERT_FUNC(EVP_DigestSignInit(md_ctx.get(), nullptr, EVP_sm3(), nullptr,
+  OSSL_ASSERT_FUNC(EVP_DigestSignInit(md_ctx.get(), nullptr, md.get_EVP_MD(), nullptr,
                                       get_EVP_PKEY()));
 
   size_t siglen;
@@ -165,12 +166,12 @@ Bytes KeyPair::sign(const Bytes &message) {
   return std::move(signature);
 }
 
-Bytes x::crypto::KeyPair::sign_file(std::string_view filename) {
+Bytes x::crypto::KeyPair::sign_file(std::string_view filename,Digest&& md) {
   File f(filename, File::OpenMode::BinaryReadWrite);
 
   EVP_MD_CTX_ptr md_ctx(EVP_MD_CTX_new());
   OSSL_ASSERT_PTR(md_ctx);
-  OSSL_ASSERT_FUNC(EVP_DigestSignInit(md_ctx.get(), nullptr, EVP_sm3(), nullptr,
+  OSSL_ASSERT_FUNC(EVP_DigestSignInit(md_ctx.get(), nullptr, md.get_EVP_MD(), nullptr,
                                       get_EVP_PKEY()));
   Bytes buffer(4096);
   while (f.good()) {
@@ -189,14 +190,14 @@ Bytes x::crypto::KeyPair::sign_file(std::string_view filename) {
   return std::move(signature);
 }
 
-bool KeyPair::verify(const Bytes &message, const Bytes &signature) {
+bool KeyPair::verify(const Bytes &message, Digest&& md,const Bytes &signature) {
   if (message.empty() || signature.empty())
     return false;
 
   EVP_MD_CTX_ptr md_ctx(EVP_MD_CTX_new());
   OSSL_ASSERT_PTR(md_ctx);
 
-  OSSL_ASSERT_FUNC(EVP_DigestVerifyInit(md_ctx.get(), nullptr, EVP_sm3(),
+  OSSL_ASSERT_FUNC(EVP_DigestVerifyInit(md_ctx.get(), nullptr, md.get_EVP_MD(),
                                         nullptr, get_EVP_PKEY()));
 
   return EVP_DigestVerify(
@@ -205,13 +206,13 @@ bool KeyPair::verify(const Bytes &message, const Bytes &signature) {
              message.size()) == 1;
 }
 
-bool KeyPair::verify_file(std::string_view filename, const Bytes &signature) {
+bool KeyPair::verify_file(std::string_view filename,Digest&& md, const Bytes &signature) {
   File f(filename, File::OpenMode::BinaryReadWrite);
 
   EVP_MD_CTX_ptr md_ctx(EVP_MD_CTX_new());
   OSSL_ASSERT_PTR(md_ctx);
 
-  OSSL_ASSERT_FUNC(EVP_DigestVerifyInit(md_ctx.get(), nullptr, EVP_sm3(),
+  OSSL_ASSERT_FUNC(EVP_DigestVerifyInit(md_ctx.get(), nullptr, md.get_EVP_MD(),
                                         nullptr, get_EVP_PKEY()));
 
   Bytes buffer(4096);

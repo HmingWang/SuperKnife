@@ -19,3 +19,16 @@ set(BoldCyan "${Esc}[1;36m")
 set(BoldWhite "${Esc}[1;37m")
 
 message(STATUS "${Red}颜${Green}色${Blue}测${BoldWhite}试${Reset}")
+
+function(info TEXT)
+    if(WIN32 AND NOT CYGWIN)
+        # Windows 平台（非 Cygwin）通常不支持 ANSI 颜色
+        message(STATUS "${TEXT}")
+    else()
+        # 使用 ANSI 转义码显示红色文本
+        message(STATUS "${Red}${TEXT}${Reset}")
+    endif()
+endfunction()
+
+
+info("this is a test cmake funciton output")

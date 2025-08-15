@@ -1,2 +1,6 @@
 set(OPENSSL_LIB_DIR "")
 set(OpenSSL_ROOT_DIR "/opt/homebrew/Cellar/openssl@3/3.5.1/")
+set(Oracle_HOME "D:\OracleClient\instantclient_23_9")
+set(Oracle_INCLUDE_DIR ${Oracle_HOME}/sdk/include)
+set(Oracle_LIB_DIR ${Oracle_HOME}/sdk/lib/msvc)
+
