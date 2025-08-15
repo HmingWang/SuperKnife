@@ -2,7 +2,7 @@
 // Load the native addon using the 'bindings' module
 // This will look for the compiled .node file in various places
 const bindings = require('bindings')
-const addon = bindings('api')
+const addon = bindings('addon')
 
 
 // Try the verifyLogin function
