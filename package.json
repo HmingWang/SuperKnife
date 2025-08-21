@@ -18,7 +18,7 @@
     "el:package": "electron-forge package",
     "el:make": "electron-forge make",
     "cmake:config": "cmake-js configure --CDWITH_TESTS=OFF",
-    "cmake:build": " cmake-js compile",
+    "cmake:build": " npm run cmake:config && cmake-js compile",
     "cmake:rebuild": "cmake-js rebuild",
     "cmake:build:debug": "cmake-js build --config Debug",
     "cmake:build:release": "cmake-js build --config Release",

@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
-#include "sha256.h"
+#include "digest.h"
 
 bool nativeVerifyLogin(const std::string &username, const std::string &password)
 {
@@ -15,7 +15,8 @@ bool nativeVerifyLogin(const std::string &username, const std::string &password)
         auto passwordHash = result.empty() ? "" : result[0][0];
         auto salt = result.empty() ? "" : result[0][1];
         std::cout << "Query executed successfully." << std::endl;
-        std::string inputHash = sha256(password, salt);
+
+        std::string inputHash = x::crypto::Digest::Generator::sha256().hash((String(password)+salt).to_bytes()).to_hex_string();
         std::cout << "Input hash: " << inputHash << ", Password hash: " << passwordHash << std::endl;
         return (inputHash == passwordHash);
     }
