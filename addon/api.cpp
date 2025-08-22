@@ -3,6 +3,7 @@
 #include "auth.h"
 #include <iostream>
 #include "base64.h"
+#include "xstring.h"
 
 Napi::Boolean VerifyLogin(const Napi::CallbackInfo &info)
 {
@@ -38,7 +39,7 @@ Napi::String Base64Encode(const Napi::CallbackInfo &info)
     {
         wrap = info[1].As<Napi::Boolean>();
     }
-    std::string output = base64_encode(input, wrap);
+    std::string output = x::crypto::Base64::Encoder::encode(String(input).to_bytes(), wrap);
     return Napi::String::New(env, output);
 }
 
@@ -51,6 +52,6 @@ Napi::String Base64Decode(const Napi::CallbackInfo &info)
         return Napi::String::New(env, "null");
     }
     std::string input = info[0].As<Napi::String>();
-    std::string output = base64_decode(input);
+    std::string output = x::crypto::Base64::Decoder::decode(input).to_string();
     return Napi::String::New(env, output);
 }
