@@ -18,6 +18,9 @@ yarn-error.log
 .c9/
 *.launch
 .settings/
+
+# External dependencies
+/external/xcore/
 *.sublime-workspace
 
 # Visual Studio Code
