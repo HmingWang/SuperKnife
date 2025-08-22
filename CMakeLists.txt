@@ -7,7 +7,6 @@ option(WITH_TESTS "编译单元测试案例" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(compiler)
 include(ansicolor)
 include(platform)
 
@@ -15,20 +14,12 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/local.cmake)
   include(local)
 endif()
 
+include(xcore)
+
 # 添加子目录
 if(CMAKE_JS_VERSION)
   message(STATUS "CMake-js编译node addon")
   add_subdirectory(addon)
 else()
   message(STATUS "非CMake-js编译，略过node addon")
-endif()
-
-add_subdirectory(xcore)
-add_subdirectory(external/sqlite3)
-
-# #############|test|################
-if(WITH_TESTS)
-  include(CTest)
-  include(catch2)
-  add_subdirectory(tests)
 endif()
