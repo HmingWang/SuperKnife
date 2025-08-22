@@ -20,16 +20,26 @@ execute_process(
 include_directories(
   ${NODE_INCLUDE_DIR} # node.h 所在目录
   ${NODE_ADDON_API_DIR} # napi.h 所在目录
+  ${CMAKE_SOURCE_DIR}/external/xcore/crypto/inc # base64.h 所在目录
+  ${CMAKE_SOURCE_DIR}/external/xcore/dbtools # sqlitedb.h 所在目录
+  ${CMAKE_SOURCE_DIR}/external/xcore/dbtools/inc # dbtools 头文件目录
+  ${CMAKE_SOURCE_DIR}/external/xcore/common # 通用头文件目录
+  ${CMAKE_SOURCE_DIR}/external/xcore/utils/inc # exceptions.h 所在目录
 )
 
 aux_source_directory(. API_SRC)
 add_library(addon SHARED ${API_SRC} ${CMAKE_JS_SRC})
-target_link_libraries(addon PUBLIC ${CMAKE_JS_LIB} xcore)
+target_link_libraries(addon 
+    PRIVATE 
+    ${CMAKE_JS_LIB}
+    crypto
+    utils
+    dbtools
+    sqlite3)
 target_include_directories(addon PUBLIC 
     ${CMAKE_JS_INC}   
     ${NODE_INCLUDE_DIR}
-    ${NODE_ADDON_API_DIR}
-)
+    ${NODE_ADDON_API_DIR})
 
 # 设置输出名称和位置
 set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")

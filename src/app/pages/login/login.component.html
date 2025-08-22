@@ -1,5 +1,12 @@
 <div class="login-container">
+  <ngx-particles [options]="particlesOptions" [particlesInit]="particlesInit"></ngx-particles>
+  
   <div class="login-box">
+    <div class="login-header">
+      <img src="assets/logo.png" alt="Logo" class="login-logo">
+      <h1>SuperKnife</h1>
+      <p>欢迎使用超级工具箱</p>
+    </div>
 
     <form nz-form [formGroup]="loginForm" (ngSubmit)="submitForm()" class="login-form">
       <nz-form-item>
@@ -11,17 +18,24 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-control nzErrorTip="请输入密码!" >
+        <nz-form-control nzErrorTip="请输入密码!">
           <nz-input-group nzPrefixIcon="lock">
             <input type="password" nz-input formControlName="password" placeholder="密码" />
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>
 
+      <div class="login-form-options">
+        <label nz-checkbox formControlName="remember">
+          <span>记住我</span>
+        </label>
+        <a class="login-form-forgot" (click)="forgotPassword()">忘记密码？</a>
+      </div>
+
       <nz-form-item>
         <nz-form-control>
           <button nz-button nzType="primary" class="login-form-button" [nzLoading]="isLoading" [disabled]="!loginForm.valid">
-            登录
+            登 录
           </button>
         </nz-form-control>
       </nz-form-item>

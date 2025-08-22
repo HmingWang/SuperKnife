@@ -1,36 +1,119 @@
 .login-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: #f0f2f5;
-  // background-image: url("/assets/pexels-arjay-neyra-2152024526-32132398.jpg");
-  background-repeat: no-repeat;
-  background-position: center 110px;
-  background-size: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  overflow: hidden;
+
+  ::ng-deep ng-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
 }
 
 .login-box {
-  width: 368px;
-  padding: 36px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
-  background: #fff;
-  border-radius: 4px;
+  position: relative;
+  z-index: 2;
+  width: 400px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.5s ease;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+
+  .login-logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #1a237e;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: #666;
+    font-size: 14px;
+  }
 }
 
 .login-form {
-  max-width: 300px;
+  max-width: 100%;
+
+  nz-form-item {
+    margin-bottom: 24px;
+  }
+
+  nz-input-group {
+    height: 40px;
+  }
+
+  input {
+    height: 40px;
+    padding: 8px 12px;
+  }
+}
+
+.login-form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  color: #666;
 }
 
 .login-form-forgot {
-  float: right;
+  color: #1890ff;
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #40a9ff;
+  }
 }
 
 .login-form-button {
+  height: 40px;
+  font-size: 16px;
+  letter-spacing: 4px;
   width: 100%;
-  margin-bottom: 8px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  border: none;
+  transition: all 0.3s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 35, 126, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    background: linear-gradient(135deg, #9fa8da 0%, #90caf9 100%);
+  }
 }
 
-nz-form-item{
-  margin: 4px;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
