@@ -1,18 +1,19 @@
 .login-container {
-  position: relative;
+  // margin-top: 36px;
+  // position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  // min-height: 100%;
+  // background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
   overflow: hidden;
 
-  ::ng-deep ng-particles {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
+  // ::ng-deep ng-particles {
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 100%;
+  //   z-index: 1;
+  // }
 }
 
 .login-box {
@@ -20,7 +21,7 @@
   z-index: 2;
   width: 400px;
   padding: 40px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.0);
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
@@ -34,19 +35,19 @@
   .login-logo {
     width: 64px;
     height: 64px;
-    margin-bottom: 16px;
+    // margin-bottom: 16px;
   }
 
   h1 {
     margin: 0;
     font-size: 24px;
-    color: #1a237e;
+    color: #ffffff;
     font-weight: 600;
   }
 
   p {
     margin: 8px 0 0;
-    color: #666;
+    color: #f6cf0f;
     font-size: 14px;
   }
 }
@@ -60,12 +61,13 @@
 
   nz-input-group {
     height: 40px;
+    margin: 8px;
   }
 
-  input {
-    height: 40px;
-    padding: 8px 12px;
-  }
+  // input {
+  //   height: 40px;
+  //   padding: 8px 12px;
+  // }
 }
 
 .login-form-options {
@@ -77,7 +79,7 @@
 }
 
 .login-form-forgot {
-  color: #1890ff;
+  color: #ffffff;
   cursor: pointer;
   transition: color 0.3s;
 
@@ -85,10 +87,14 @@
     color: #40a9ff;
   }
 }
+.login-form-options span {
+  color: #ffffff;
+}
 
 .login-form-button {
   height: 40px;
   font-size: 16px;
+  color: black;
   letter-spacing: 4px;
   width: 100%;
   border-radius: 4px;
