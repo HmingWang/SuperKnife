@@ -3,3 +3,7 @@ body{
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+/* 允许overflow属性参与Angular动画 */
+.angular-animations-allow-overflow {
+  animation: overflow 1s;
+}
