@@ -8,7 +8,7 @@ import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ElectronService } from '../../core/electron.service';
-import { StatusService } from '../../services/status.service';
+import { WindowControlService } from '../../services/window-control.service';
 import { NgxParticlesModule } from "@tsparticles/angular";
 import { Engine, MoveDirection, type ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
@@ -41,6 +41,10 @@ export class LoginComponent implements OnInit {
       color: {
         value: "#0d47a1",
       },
+    },
+    fullScreen: {
+      enable: true,
+      zIndex: -1
     },
     fpsLimit: 120,
     interactivity: {
@@ -111,8 +115,7 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private message: NzMessageService,
     private authService: AuthService,
-    private router: Router,
-    private statusService: StatusService) {
+    private router: Router,private windowControlService: WindowControlService) {
   }
 
   async particlesInit(engine: Engine): Promise<void> {
@@ -126,14 +129,11 @@ export class LoginComponent implements OnInit {
       password: [null, [Validators.required]],
       remember: [!!rememberedUsername]
     });
-    
+
     this.electronService.resizeWindow(400, 600); // 调整登录窗口大小
-    
-    this.statusService.showMenuButton.asObservable().subscribe((visible: boolean) => {
-      if (visible) {
-        this.showMenuButton = visible;
-      }
-    });    
+    this.windowControlService.options().transparent = true;
+
+
   }
 
   submitForm() {
@@ -161,7 +161,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         console.error('Login error:', error);
         this.message.error('登录失败，请稍后再试');
-      });  
+      });
     }
   }
 

@@ -1,24 +1,27 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {WindowControlsComponent} from './components/window-controls/window-controls.component';
+import { WindowControlsComponent } from './components/window-controls/window-controls.component';
+import { WindowControlService } from './services/window-control.service';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, WindowControlsComponent],
-  template: `<app-window-controls [title]="this.title" [showMenuButton]="showMenuButton">
-</app-window-controls>
-<div class="content">
-  <router-outlet/>
-  /div>`,
+  template: `
+    <app-window-controls/>
+    <div class="content">
+      <router-outlet/>
+    </div>
+    `,
   styles: [
-`
-.content{
-  margin-top: 28px;
-}
-`
+    `
+      .content{
+        margin-top: 28px;
+      }
+    `
   ]
 })
 export class AppComponent {
-  title = 'Super Knife';
-  showMenuButton = false;
+  constructor(private windowControlService: WindowControlService) {
+    this.windowControlService.options().title = "Super Knife";
+  }
 }

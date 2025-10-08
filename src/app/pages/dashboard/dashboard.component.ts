@@ -6,7 +6,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { FooterComponent } from "../../components/footer/footer.component";
 import { RouterOutlet } from '@angular/router';
-import { StatusService } from '../../services/status.service';
+import { WindowControlService } from '../../services/window-control.service';
 @Component({
   selector: 'app-dashboard',
   imports: [NzBreadCrumbModule, NzIconModule, NzLayoutModule, NzMenuModule, FooterComponent, RouterOutlet, RouterLink],
@@ -14,17 +14,14 @@ import { StatusService } from '../../services/status.service';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-  constructor(private router: Router, private statusService: StatusService) {
+  constructor(private router: Router,private windowControlService:WindowControlService) {
 
 
   }
 
   isCollapsed = false;
   ngOnInit(): void {
-    this.statusService.showMenuButton.next(true); // Show menu button on dashboard
-    this.statusService.isCollapsed.asObservable().subscribe((collapsed: boolean) => {
-      this.isCollapsed = collapsed;
-    });
+    this.windowControlService.reset();
   }
 
 }

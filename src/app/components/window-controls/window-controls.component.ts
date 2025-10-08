@@ -2,39 +2,35 @@ import { Component, Input, Output } from '@angular/core';
 
 import { ElectronService } from '../../core/electron.service';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
-import { StatusService } from '../../services/status.service';
+import { WindowControlService } from '../../services/window-control.service';
 
 @Component({
   selector: 'app-window-controls',
   templateUrl: './window-controls.component.html',
   styleUrls: ['./window-controls.component.scss'],
   imports: [
-    NzIconDirective
-
-  ]
+    NzIconDirective,
+]
 
 })
 export class WindowControlsComponent {
   changeCollapse() {
-    this.statusService.isCollapsed.next(!this.statusService.isCollapsed.value);
-    this.isCollapsed=this.statusService.isCollapsed.value;
+    this.isCollapsed = !this.isCollapsed;
+    this.windowControlService.setOptions({
+      collapsible: this.isCollapsed
+    })
   }
 
-
-  @Input() title!: string;
+  options: any;
 
   isCollapsed: boolean = false;
-  @Input() showMenuButton: boolean = false;
 
   constructor(private electronService: ElectronService,
-    private statusService: StatusService
+    private windowControlService: WindowControlService
   ) { }
 
-
   ngOnInit(): void {
-    this.statusService.showMenuButton.asObservable().subscribe((visible: boolean) => {
-      this.showMenuButton = visible;
-    });
+    this.options = this.windowControlService.options;
   }
 
   minimize() {
