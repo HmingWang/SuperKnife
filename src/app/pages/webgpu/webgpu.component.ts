@@ -2,6 +2,11 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 // Import GPUCanvasContext type from TypeScript DOM lib
 type GPUCanvasContext = any;
 
+// Extend the Navigator interface to include the 'gpu' property
+interface Navigator {
+  gpu?: any;
+}
+
 @Component({
   selector: 'app-webgpu',
   imports: [],
