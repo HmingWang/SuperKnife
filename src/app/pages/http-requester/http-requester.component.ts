@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
     NzButtonModule,
     NzSelectModule,
     NzInputModule
-  ] as const
+  ]
 })
 export class HttpRequesterComponent {
   private http = inject(HttpClient);
@@ -34,7 +34,7 @@ export class HttpRequesterComponent {
   loading = signal(false);
   result = signal<any | null>(null);
 
-  // 计算是否为POST
+  // 计算属性：是否为 POST
   isPost = computed(() => this.method() === 'POST');
 
   addParam() {
@@ -51,6 +51,21 @@ export class HttpRequesterComponent {
 
   removeHeader(i: number) {
     this.headers.update(list => list.filter((_, idx) => idx !== i));
+  }
+
+  /** 🔍 自动格式化 JSON Body */
+  formatBody() {
+    try {
+      if (!this.body().trim()) {
+        this.message.info('请求体为空，无需格式化');
+        return;
+      }
+      const parsed = JSON.parse(this.body());
+      this.body.set(JSON.stringify(parsed, null, 2));
+      this.message.success('JSON 已格式化');
+    } catch {
+      this.message.error('请求体不是有效的 JSON');
+    }
   }
 
   sendRequest() {

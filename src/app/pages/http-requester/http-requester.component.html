@@ -5,7 +5,7 @@
       <nz-option nzValue="POST" nzLabel="POST"></nz-option>
     </nz-select>
 
-    <input nz-input placeholder="输入请求 URL" [ngModel]="url()" (ngModelChange)="url.set($event)" style="flex: 1" />
+    <input nz-input placeholder="输入请求 URL" [(ngModel)]="url" style="flex: 1" />
     <button nz-button nzType="primary" [nzLoading]="loading()" (click)="sendRequest()" style="margin-left: 8px;">
       发送
     </button>
@@ -35,7 +35,12 @@
 
   <!-- Body -->
   <div *ngIf="isPost()" class="body-section">
-    <label>请求体（JSON）：</label>
+    <div class="body-header">
+      <label>请求体（JSON）：</label>
+      <button nz-button nzSize="small" nzType="default" (click)="formatBody()" style="margin-left: 8px;">
+        🔍 格式化 JSON
+      </button>
+    </div>
     <textarea
       nz-input
       [(ngModel)]="body"
