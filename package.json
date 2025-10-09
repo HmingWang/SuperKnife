@@ -17,7 +17,7 @@
     "el:forge": "electron-forge start",
     "el:package": "electron-forge package",
     "el:make": "electron-forge make",
-    "cmake:config": "cmake-js configure --runtime electron --runtimeVersion 36.4.0 --arch x64 --CDWITH_TESTS=OFF",
+    "cmake:config": "cmake-js configure --runtime electron --runtimeVersion 36.4.0 --CDWITH_TESTS=OFF",
     "cmake:build": "cmake-js build",
     "cmake:rebuild": "cmake-js rebuild",
     "cmake:build:debug": "cmake-js build --config Debug",
