@@ -4,6 +4,8 @@
 const bindings = require('bindings')
 const addon = bindings('addon')
 
+console.log('Addon loaded:', addon)
+
 
 // Try the verifyLogin function
 const result = addon.verifyLogin('admin', 'admin123')

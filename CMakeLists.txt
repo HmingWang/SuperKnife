@@ -9,6 +9,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(ansicolor)
 include(platform)
+include(compiler)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/local.cmake)
   include(local)
