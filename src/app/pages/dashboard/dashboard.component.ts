@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -14,14 +14,17 @@ import { WindowControlService } from '../../services/window-control.service';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-  constructor(private router: Router,private windowControlService:WindowControlService) {
 
+  constructor(private router: Router) {
 
   }
 
-  isCollapsed = false;
+  winbar = inject(WindowControlService);
+
   ngOnInit(): void {
-    this.windowControlService.reset();
+    this.winbar.reset();
+    this.winbar.options().showMenuButton = true;
+    // this.winbar.options().backgroundColor = '#f0f2f5';
   }
 
 }

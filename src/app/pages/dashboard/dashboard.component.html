@@ -1,5 +1,5 @@
 <nz-layout>
-  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+  <nz-sider nzCollapsible [(nzCollapsed)]="this.winbar.options().collapsible" [nzTrigger]="null">
     <div class="logo"></div>
     <ul nz-menu nzTheme="dark" nzMode="inline">
       <li nz-submenu nzTitle="系统工具" nzIcon="windows">
@@ -33,7 +33,7 @@
   <nz-layout>
     <!-- <nz-header>
             <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-                (click)="isCollapsed = !isCollapsed" />
+               />
         </nz-header> -->
     <nz-content>
       <!-- <nz-breadcrumb>
