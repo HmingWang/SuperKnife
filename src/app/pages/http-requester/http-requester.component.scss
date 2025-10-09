@@ -1,0 +1,27 @@
+.http-requester {
+  .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .param-section,
+  .header-section {
+    margin-bottom: 16px;
+
+    .param-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+  }
+
+  .body-section {
+    margin-top: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: monospace;
+  }
+}
