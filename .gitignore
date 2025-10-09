@@ -20,7 +20,6 @@ yarn-error.log
 .settings/
 
 # External dependencies
-/external/xcore/
 *.sublime-workspace
 
 # Visual Studio Code
