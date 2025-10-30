@@ -4,7 +4,7 @@ include(FetchContent)
 
 set(XCORE_BUILD_TESTS OFF CACHE BOOL "Don't build xCore tests" FORCE)
 
-set(xCore_DIR ${CMAKE_SOURCE_DIR}/external/xcore)
+set(xCore_DIR ${CMAKE_SOURCE_DIR}/xcore)
 
 
 

@@ -33,6 +33,7 @@ target_link_libraries(addon
     PRIVATE 
     ${CMAKE_JS_LIB}
     xCore::crypto
+    xCore::log
     xCore::utils
     xCore::dbtools
     xCore::sqlite3)

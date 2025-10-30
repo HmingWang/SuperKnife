@@ -1,0 +1,4 @@
+[submodule "xcore"]
+	path = xcore
+	url = git@hming.wang:xcore.git
+	branch = new
