@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { ElectronService } from '../../core/electron.service';
 import { WindowControlService } from '../../services/window-control.service';
 import { NgxParticlesModule } from "@tsparticles/angular";
-import { Engine, MoveDirection, type ISourceOptions } from "@tsparticles/engine";
+import { Engine, type ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 
 @Component({

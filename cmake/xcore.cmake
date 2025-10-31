@@ -11,9 +11,9 @@ set(xCore_DIR ${CMAKE_SOURCE_DIR}/xcore)
 
 FetchContent_Declare(
   xCore
-  GIT_REPOSITORY git@hming.wang:xcore.git
-  GIT_TAG        new
-  GIT_SHALLOW    TRUE
+  # GIT_REPOSITORY git@hming.wang:xcore.git
+  # GIT_TAG        new
+  # GIT_SHALLOW    TRUEd
   SOURCE_DIR     ${xCore_DIR}
 )
 

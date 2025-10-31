@@ -1,9 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
-body{
+body {
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 /* 允许overflow属性参与Angular动画 */
 .angular-animations-allow-overflow {
   animation: overflow 1s;
+}
+
+// 弹出窗口层时不显示滚动条
+.cdk-global-scrollblock {
+  overflow: visible !important;
+  position: static !important;
+  width: auto !important;
 }

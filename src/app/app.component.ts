@@ -17,6 +17,9 @@ import { WindowControlService } from './services/window-control.service';
       .content{
         margin-top: 28px;
       }
+
+      
+
     `
   ]
 })

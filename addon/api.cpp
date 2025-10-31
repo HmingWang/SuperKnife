@@ -55,3 +55,10 @@ Napi::String Base64Decode(const Napi::CallbackInfo &info)
     std::string output = x::crypto::Base64::Decoder::decode(input).to_string();
     return Napi::String::New(env, output);
 }
+
+Napi::Boolean MQSendMessage(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    
+    return Napi::Boolean();
+}

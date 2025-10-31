@@ -36,7 +36,8 @@ target_link_libraries(addon
     xCore::log
     xCore::utils
     xCore::dbtools
-    xCore::sqlite3)
+    xCore::sqlite3
+    xCore::cms)
 target_include_directories(addon PUBLIC 
     ${CMAKE_JS_INC}   
     ${NODE_INCLUDE_DIR}

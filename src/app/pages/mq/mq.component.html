@@ -1,0 +1,28 @@
+<nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue">
+    <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
+    <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
+    <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+</nz-select>
+<button nz-button nzType="primary" (click)="add_options()">增加</button>
+
+<nz-modal nzVisible="true" nzTitle="增加配置" (nzOnCancel)="showAddModal = false" (nzOnOk)="showAddModal = false"
+    class="modal">
+    <ng-container *nzModalContent>
+        <label>配置名称:</label>
+        <input nz-input [(ngModel)]="config.name" />
+        <label>主机:</label>
+        <input nz-input [(ngModel)]="config.host" />
+        <label>端口:</label>
+        <input nz-input [(ngModel)]="config.port" />
+        <label>通道:</label>
+        <input nz-input [(ngModel)]="config.channel" />
+        <label>队列管理器:</label>
+        <input nz-input [(ngModel)]="config.qmgr" />
+        <label>队列:</label>
+        <input nz-input [(ngModel)]="config.queue" />
+        <label>用户名:</label>
+        <input nz-input [(ngModel)]="config.username" />
+        <label>密码:</label>
+        <input nz-input [(ngModel)]="config.password" type="password" />
+    </ng-container>
+</nz-modal>

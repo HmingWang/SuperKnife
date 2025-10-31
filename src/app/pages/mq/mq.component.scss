@@ -1,0 +1,9 @@
+.modal {
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.modal::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
