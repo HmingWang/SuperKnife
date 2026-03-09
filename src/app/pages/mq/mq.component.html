@@ -5,8 +5,8 @@
 </nz-select>
 <button nz-button nzType="primary" (click)="add_options()">增加</button>
 
-<nz-modal nzVisible="true" nzTitle="增加配置" (nzOnCancel)="showAddModal = false" (nzOnOk)="showAddModal = false"
-    class="modal">
+<nz-modal nzVisible="{{showAddModal}}" nzTitle="增加配置" (nzOnCancel)="showAddModal = false"
+    (nzOnOk)="showAddModal = false" class="modal" (nzOnClose)="showAddModal = false">
     <ng-container *nzModalContent>
         <label>配置名称:</label>
         <input nz-input [(ngModel)]="config.name" />
